@@ -1,6 +1,8 @@
 package com.cybercrime.controller;
 
-
+import com.cybercrime.dto.ComplaintCreateDto;
+import com.cybercrime.dto.ComplaintDto;
+import com.cybercrime.dto.ComplaintStatusUpdateDto;
 import com.cybercrime.service.ComplaintService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +19,24 @@ public class ComplaintController {
     private final ComplaintService complaintService;
 
     @PostMapping
-    public ResponseEntity<Complaint> createComplaint(
-            @RequestPart("complaint") Complaint complaint,
-            @RequestPart(value = "evidences", required = false) List<MultipartFile> evidences) {
-        return ResponseEntity.ok(complaintService.createComplaint(complaint, evidences));
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ComplaintDto> createComplaint(
+            @RequestBody ComplaintCreateDto complaintDto,
+            @RequestPart List<MultipartFile> evidences) {
+        return ResponseEntity.ok(complaintService.createComplaint(complaintDto, evidences));
+    }
+
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<List<ComplaintDto>> getUserComplaints(@PathVariable Long userId) {
+        return ResponseEntity.ok(complaintService.getUserComplaints(userId));
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMIN', 'DEPARTMENT_ADMIN')")
-    public ResponseEntity<Complaint> updateStatus(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ComplaintDto> updateComplaintStatus(
             @PathVariable Long id,
-            @RequestBody ComplaintStatus status) {
-        return ResponseEntity.ok(complaintService.updateStatus(id, status));
-    }
-
-    @PostMapping("/{id}/feedback")
-    public ResponseEntity<Complaint> addFeedback(
-            @PathVariable Long id,
-            @RequestParam String feedback,
-            @RequestParam Integer rating) {
-        return ResponseEntity.ok(complaintService.addFeedback(id, feedback, rating));
+            @RequestBody ComplaintStatusUpdateDto statusUpdate) {
+        return ResponseEntity.ok(complaintService.updateStatus(id, statusUpdate.getStatus()));
     }
 }

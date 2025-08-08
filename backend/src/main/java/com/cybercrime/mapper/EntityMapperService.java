@@ -60,6 +60,15 @@ public class EntityMapperService {
         return modelMapper.map(evidenceDto, Evidence.class);
     }
 
+    // Feedback mappings
+    public FeedbackDto toFeedbackDto(Complaint complaint) {
+        FeedbackDto dto = new FeedbackDto();
+        dto.setComplaintId(complaint.getId());
+        dto.setFeedback(complaint.getFeedback());
+        dto.setRating(complaint.getRating());
+        return dto;
+    }
+
     // List mappings
     public <S, T> List<T> mapList(List<S> source, Class<T> targetClass) {
         return source.stream()
