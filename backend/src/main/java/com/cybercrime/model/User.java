@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,9 +15,15 @@ public class User {
     private Long id;
 
     private String name;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
+
+    @Column(unique = true)
     private String nidNumber;
+
     private boolean approved;
 
     @Enumerated(EnumType.STRING)
@@ -30,6 +37,13 @@ public class User {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;  // For department admins
+
+    @OneToMany(mappedBy = "user")
+    private List<Complaint> complaints;
 
     @PrePersist
     protected void onCreate() {

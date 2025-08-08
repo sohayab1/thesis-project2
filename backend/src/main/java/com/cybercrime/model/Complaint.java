@@ -46,4 +46,19 @@ public class Complaint {
 
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL)
     private List<Evidence> evidences;
+
+    @Column(name = "resolved_date")
+    private LocalDateTime resolvedDate;
+
+    @Column(name = "resolution_notes")
+    private String resolutionNotes;
+
+    @Column(name = "priority")
+    @Enumerated(EnumType.STRING)
+    private ComplaintPriority priority;
+
+    // Add this enum class
+    public enum ComplaintPriority {
+        LOW, MEDIUM, HIGH, CRITICAL
+    }
 }
