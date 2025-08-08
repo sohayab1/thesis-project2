@@ -2,6 +2,7 @@ package com.cybercrime.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -20,7 +21,11 @@ public class Evidence {
     @Column(nullable = false)
     private String filePath;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "complaint_id", nullable = false)
     private Complaint complaint;
+
+    private LocalDateTime uploadedAt;
+    private Long fileSize;
+    private String uploadedBy;
 }

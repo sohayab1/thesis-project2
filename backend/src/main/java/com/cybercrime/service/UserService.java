@@ -14,14 +14,13 @@ public interface UserService {
                         MultipartFile selfieFront,
                         MultipartFile selfieLeft,
                         MultipartFile selfieRight);
-
     UserDto approveUser(Long userId);
-
+    UserDto rejectUser(Long userId);
     UserDto updateUser(Long userId, UserUpdateDto userDto);
-
     void deleteUser(Long userId);
-
     UserDto getUserProfile(Long userId);
-
     List<UserDto> getUsersByDepartment(Long departmentId);
+    boolean existsByEmail(String email);
+    boolean existsByNidNumber(String nidNumber);
+    void updatePassword(Long userId, String currentPassword, String newPassword);
 }

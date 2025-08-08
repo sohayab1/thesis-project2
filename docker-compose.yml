@@ -5,10 +5,10 @@ services:
     container_name: cybercrime_db
     environment:
       POSTGRES_DB: cybercrime_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: cybercrime_user
+      POSTGRES_PASSWORD: anabil
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Changed to use port 5433 on host
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

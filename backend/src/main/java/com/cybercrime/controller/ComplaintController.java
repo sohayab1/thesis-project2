@@ -1,7 +1,6 @@
 package com.cybercrime.controller;
 
 import com.cybercrime.dto.*;
-import com.cybercrime.model.ComplaintStatus;
 import com.cybercrime.service.ComplaintService;
 
 import lombok.RequiredArgsConstructor;

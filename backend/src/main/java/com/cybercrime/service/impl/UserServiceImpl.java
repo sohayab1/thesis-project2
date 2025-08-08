@@ -1,31 +1,37 @@
 package com.cybercrime.service.impl;
 
 import com.cybercrime.model.Department;
-import com.cybercrime.model.User;  
+import com.cybercrime.model.User;
 import com.cybercrime.model.UserRole;
 import com.cybercrime.dto.RegisterUserDto;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.dto.UserUpdateDto;
 import com.cybercrime.mapper.EntityMapperService;
 import com.cybercrime.repository.UserRepository;
+import com.cybercrime.repository.DepartmentRepository;
 import com.cybercrime.service.FileStorageService;
 import com.cybercrime.service.UserService;
 import com.cybercrime.exception.ResourceNotFoundException;
+import com.cybercrime.exception.DuplicateResourceException;
+import com.cybercrime.exception.UnauthorizedException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final DepartmentRepository departmentRepository;
     private final EntityMapperService mapper;
     private final FileStorageService fileStorageService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -35,18 +41,18 @@ public class UserServiceImpl implements UserService {
                               MultipartFile selfieFront,
                               MultipartFile selfieLeft,
                               MultipartFile selfieRight) {
+        validateNewUser(registerUserDto);
+        validateDocuments(nidFront, nidBack, selfieFront, selfieLeft, selfieRight);
+        
         User user = mapper.toUser(registerUserDto);
+        user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
         
-        // Store files
-        user.setNidFrontPath(fileStorageService.store(nidFront, "nid"));
-        user.setNidBackPath(fileStorageService.store(nidBack, "nid"));
-        user.setSelfieFrontPath(fileStorageService.store(selfieFront, "selfie"));
-        user.setSelfieLeftPath(fileStorageService.store(selfieLeft, "selfie"));
-        user.setSelfieRightPath(fileStorageService.store(selfieRight, "selfie"));
+        storeUserDocuments(user, nidFront, nidBack, selfieFront, selfieLeft, selfieRight);
         
-        // Set default values
         user.setApproved(false);
         user.setRole(UserRole.USER);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
         
         User savedUser = userRepository.save(user);
         return mapper.toUserDto(savedUser);
@@ -54,21 +60,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto approveUser(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        user.setApproved(true);
-        return mapper.toUserDto(userRepository.save(user));
-    }
-
-    @Override
-    @Transactional
     public UserDto updateUser(Long userId, UserUpdateDto userDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = findUserById(userId);
         
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
+        if (userDto.getEmail() != null && !user.getEmail().equals(userDto.getEmail()) && 
+            userRepository.existsByEmail(userDto.getEmail())) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+        
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+        if (userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
+        }
         
         if (userDto.getDepartmentId() != null) {
             Department department = departmentRepository.findById(userDto.getDepartmentId())
@@ -76,28 +81,104 @@ public class UserServiceImpl implements UserService {
             user.setDepartment(department);
         }
         
+        if (userDto.getCurrentPassword() != null && userDto.getNewPassword() != null) {
+            updatePassword(userId, userDto.getCurrentPassword(), userDto.getNewPassword());
+        }
+        
+        user.setUpdatedAt(LocalDateTime.now());
         return mapper.toUserDto(userRepository.save(user));
     }
 
     @Override
     @Transactional
-    public void deleteUser(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("User not found");
+    public void updatePassword(Long userId, String currentPassword, String newPassword) {
+        User user = findUserById(userId);
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new UnauthorizedException("Current password is incorrect");
         }
-        userRepository.deleteById(userId);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDto approveUser(Long userId) {
+        User user = findUserById(userId);
+        user.setApproved(true);
+        user.setUpdatedAt(LocalDateTime.now());
+        return mapper.toUserDto(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
+    public UserDto rejectUser(Long userId) {
+        User user = findUserById(userId);
+        userRepository.delete(user);
+        return mapper.toUserDto(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = findUserById(userId);
+        userRepository.delete(user);
     }
 
     @Override
     public UserDto getUserProfile(Long userId) {
-        return mapper.toUserDto(userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found")));
+        return mapper.toUserDto(findUserById(userId));
     }
 
     @Override
     public List<UserDto> getUsersByDepartment(Long departmentId) {
         return userRepository.findByDepartmentId(departmentId).stream()
                 .map(mapper::toUserDto)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByNidNumber(String nidNumber) {
+        return userRepository.existsByNidNumber(nidNumber);
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    private void validateNewUser(RegisterUserDto userDto) {
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new DuplicateResourceException("Email already exists");
+        }
+        if (userRepository.existsByNidNumber(userDto.getNidNumber())) {
+            throw new DuplicateResourceException("NID number already exists");
+        }
+    }
+
+    private void storeUserDocuments(User user, MultipartFile nidFront, MultipartFile nidBack,
+                                  MultipartFile selfieFront, MultipartFile selfieLeft, 
+                                  MultipartFile selfieRight) {
+        user.setNidFrontPath(fileStorageService.store(nidFront, "nid"));
+        user.setNidBackPath(fileStorageService.store(nidBack, "nid"));
+        user.setSelfieFrontPath(fileStorageService.store(selfieFront, "selfie"));
+        user.setSelfieLeftPath(fileStorageService.store(selfieLeft, "selfie"));
+        user.setSelfieRightPath(fileStorageService.store(selfieRight, "selfie"));
+    }
+
+    private void validateDocuments(MultipartFile... files) {
+        for (MultipartFile file : files) {
+            if (file == null || file.isEmpty()) {
+                throw new IllegalArgumentException("Required document is missing");
+            }
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new IllegalArgumentException("Invalid file type. Only images are allowed");
+            }
+        }
     }
 }

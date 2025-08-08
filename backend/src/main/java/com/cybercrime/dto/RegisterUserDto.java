@@ -2,6 +2,7 @@ package com.cybercrime.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -20,5 +21,6 @@ public class RegisterUserDto {
     private String password;
 
     @NotBlank(message = "NID number is required")
+    @Pattern(regexp = "^[0-9]{10}$", message = "NID number must be 10 digits")
     private String nidNumber;
 }

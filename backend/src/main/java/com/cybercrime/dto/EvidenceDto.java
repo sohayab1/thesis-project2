@@ -1,6 +1,7 @@
 package com.cybercrime.dto;
 
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class EvidenceDto {
@@ -8,4 +9,8 @@ public class EvidenceDto {
     private String filename;
     private String fileType;
     private String filePath;
+    private Long complaintId;
+    private LocalDateTime uploadedAt;
+    private Long fileSize;
+    private String uploadedBy;
 }
