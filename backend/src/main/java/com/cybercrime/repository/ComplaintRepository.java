@@ -1,6 +1,8 @@
 package com.cybercrime.repository;
 
 import com.cybercrime.model.Complaint;
+import com.cybercrime.model.ComplaintStatus;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
