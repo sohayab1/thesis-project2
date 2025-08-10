@@ -5,7 +5,6 @@ import com.cybercrime.model.Complaint;
 import com.cybercrime.repository.ComplaintRepository;
 import com.cybercrime.service.FeedbackService;
 import com.cybercrime.exception.ResourceNotFoundException;
-import com.cybercrime.exception.UnauthorizedException;
 import com.cybercrime.mapper.EntityMapperService;
 
 import lombok.RequiredArgsConstructor;

@@ -20,6 +20,7 @@ com/cybercrime/dto/ComplaintStatusUpdateDto.class
 com/cybercrime/controller/AuthController.class
 com/cybercrime/controller/EvidenceController.class
 com/cybercrime/dto/DepartmentUpdateDto.class
+com/cybercrime/exception/CustomErrorResponse.class
 com/cybercrime/dto/FeedbackDto.class
 com/cybercrime/dto/DepartmentDto.class
 com/cybercrime/exception/ResourceNotFoundException.class
@@ -41,8 +42,11 @@ com/cybercrime/service/EvidenceService.class
 com/cybercrime/service/UserService.class
 com/cybercrime/model/Evidence.class
 com/cybercrime/repository/EvidenceRepository.class
+com/cybercrime/config/AdminUserInitializer.class
+com/cybercrime/exception/CustomErrorResponse$CustomErrorResponseBuilder.class
 com/cybercrime/exception/FileStorageException.class
 com/cybercrime/model/User.class
+com/cybercrime/config/RequestLoggingFilter.class
 com/cybercrime/model/Department.class
 com/cybercrime/service/FeedbackService.class
 com/cybercrime/dto/RegisterUserDto.class

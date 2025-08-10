@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/departments")
+@RequestMapping("/departments")
 @RequiredArgsConstructor
 public class DepartmentController {
     private final DepartmentService departmentService;
