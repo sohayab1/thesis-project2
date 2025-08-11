@@ -21,6 +21,7 @@ com/cybercrime/controller/AuthController.class
 com/cybercrime/controller/EvidenceController.class
 com/cybercrime/dto/DepartmentUpdateDto.class
 com/cybercrime/exception/CustomErrorResponse.class
+com/cybercrime/security/CustomUserDetails.class
 com/cybercrime/dto/FeedbackDto.class
 com/cybercrime/dto/DepartmentDto.class
 com/cybercrime/exception/ResourceNotFoundException.class

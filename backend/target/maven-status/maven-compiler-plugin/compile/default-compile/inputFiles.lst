@@ -27,6 +27,7 @@
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/mapper/EntityMapperService.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/controller/ComplaintController.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/model/Evidence.java
+/home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/security/CustomUserDetails.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/CustomUserDetailsService.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/dto/ComplaintCreateDto.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/dto/EvidenceDto.java

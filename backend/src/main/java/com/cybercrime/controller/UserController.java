@@ -1,6 +1,7 @@
 package com.cybercrime.controller;
 
 import com.cybercrime.model.User;
+import com.cybercrime.security.CustomUserDetails;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.dto.UserUpdateDto;
 import com.cybercrime.dto.RegisterUserDto;
@@ -8,6 +9,7 @@ import com.cybercrime.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -30,14 +33,18 @@ public class UserController {
             @RequestPart("selfieFront") MultipartFile selfieFront,
             @RequestPart("selfieLeft") MultipartFile selfieLeft,
             @RequestPart("selfieRight") MultipartFile selfieRight) {
-        return ResponseEntity.ok(userService.registerUser(userDto, nidFront, nidBack, 
-                               selfieFront, selfieLeft, selfieRight));
+        return ResponseEntity.ok(userService.registerUser(userDto, nidFront, nidBack,
+                selfieFront, selfieLeft, selfieRight));
     }
 
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserDto> getProfile(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(userService.getUserProfile(user.getId()));
+    public ResponseEntity<UserDto> getProfile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        log.debug("Received profile request for user details: {}", userDetails);
+        if (userDetails == null) {
+            throw new IllegalStateException("User details not found in security context");
+        }
+        return ResponseEntity.ok(userService.getUserProfile(userDetails.getUser().getId()));
     }
 
     @PutMapping("/profile")

@@ -3,6 +3,7 @@ package com.cybercrime.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,11 +19,20 @@ public class Department {
 
     private String description;
 
-    @OneToMany(mappedBy = "department")
-    private List<User> departmentAdmins;
+    /**
+     * Users that belong to this department.
+     * Mapping: User has a `@ManyToOne` field named "department".
+     * This will include admins and regular users assigned to the department.
+     */
+    @OneToMany(mappedBy = "department", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    private List<com.cybercrime.model.User> departmentAdmins = new ArrayList<>();
 
-    @OneToMany(mappedBy = "department")
-    private List<Complaint> complaints;
+    /**
+     * Complaints assigned to this department.
+     * Initialize to empty list to avoid NPEs when calling size(), isEmpty(), etc.
+     */
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<com.cybercrime.model.Complaint> complaints = new ArrayList<>();
 
     private boolean active = true;
 }
