@@ -31,9 +31,11 @@
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/CustomUserDetailsService.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/dto/ComplaintCreateDto.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/dto/EvidenceDto.java
+/home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/config/EmailConfig.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/DepartmentService.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/repository/ComplaintRepository.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/controller/FeedbackController.java
+/home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/EmailService.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/config/JwtConfig.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/model/ComplaintStatus.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/dto/DepartmentDto.java
@@ -44,11 +46,13 @@
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/impl/EvidenceServiceImpl.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/impl/FeedbackServiceImpl.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/exception/UnauthorizedException.java
+/home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/config/CorsConfig.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/exception/CustomErrorResponse.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/FileStorageService.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/impl/AuthServiceImpl.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/model/Complaint.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/AuthService.java
+/home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/model/Feedback.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/repository/DepartmentRepository.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/service/impl/UserServiceImpl.java
 /home/anabil/Downloads/newfolder/cybercrime-reporting/backend/src/main/java/com/cybercrime/repository/UserRepository.java

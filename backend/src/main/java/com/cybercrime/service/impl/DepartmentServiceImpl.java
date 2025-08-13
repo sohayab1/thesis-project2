@@ -101,7 +101,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         
         if (!department.getDepartmentAdmins().contains(user)) {
             department.getDepartmentAdmins().add(user);
-            user.setRole(UserRole.DEPARTMENT_ADMIN);
+            user.setRole(UserRole.DEPARTMENT_ADMIN);  // Now using the correct enum value
             userRepository.save(user);
         }
         

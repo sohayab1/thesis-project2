@@ -63,26 +63,36 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long userId, UserUpdateDto userDto) {
         User user = findUserById(userId);
         
+        // Validate email uniqueness
         if (userDto.getEmail() != null && !user.getEmail().equals(userDto.getEmail()) && 
             userRepository.existsByEmail(userDto.getEmail())) {
             throw new DuplicateResourceException("Email already exists");
         }
         
+        // Update basic info
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
+        if (userDto.getNidNumber() != null) {
+            user.setNidNumber(userDto.getNidNumber());
+        }
         
+        // Update department if provided
         if (userDto.getDepartmentId() != null) {
             Department department = departmentRepository.findById(userDto.getDepartmentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
             user.setDepartment(department);
         }
         
+        // Handle password update
         if (userDto.getCurrentPassword() != null && userDto.getNewPassword() != null) {
-            updatePassword(userId, userDto.getCurrentPassword(), userDto.getNewPassword());
+            if (!passwordEncoder.matches(userDto.getCurrentPassword(), user.getPassword())) {
+                throw new UnauthorizedException("Current password is incorrect");
+            }
+            user.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
         }
         
         user.setUpdatedAt(LocalDateTime.now());

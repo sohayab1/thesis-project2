@@ -21,10 +21,11 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final DepartmentRepository departmentRepository;
     private final FileStorageService fileStorageService;
     private final EntityMapperService mapper;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public ComplaintDto createComplaint(ComplaintCreateDto complaintDto, List<MultipartFile> evidences) {
+    public ComplaintDto createComplaint(ComplaintCreateDto complaintDto, List<MultipartFile> evidences, Long userId) {
         Complaint complaint = mapper.toComplaint(complaintDto);
         complaint.setCreatedAt(LocalDateTime.now());
         complaint.setStatus(ComplaintStatus.PENDING);
@@ -32,6 +33,11 @@ public class ComplaintServiceImpl implements ComplaintService {
         Department department = departmentRepository.findById(complaintDto.getDepartmentId())
             .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
         complaint.setDepartment(department);
+        
+        // Set the user
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        complaint.setUser(user);
         
         Complaint savedComplaint = complaintRepository.save(complaint);
 
@@ -68,7 +74,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint complaint = complaintRepository.findById(complaintId)
             .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
         
-        complaint.setFeedback(feedbackDto.getFeedback());
+        complaint.setFeedback(feedbackDto.getComment());
         complaint.setRating(feedbackDto.getRating());
         complaint.setFeedbackDate(LocalDateTime.now());
         

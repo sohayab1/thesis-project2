@@ -9,7 +9,7 @@ public class UserDto {
     private String name;
     private String email;
     private String nidNumber;
-    private boolean isApproved;
-    private UserRole role;
+    private UserRole role;  // Changed: use UserRole enum instead of String
+    private boolean approved;
     private Long departmentId;
 }

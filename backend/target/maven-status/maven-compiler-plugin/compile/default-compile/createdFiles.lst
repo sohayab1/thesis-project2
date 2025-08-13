@@ -2,6 +2,7 @@ com/cybercrime/service/FileStorageService.class
 com/cybercrime/dto/LoginDto.class
 com/cybercrime/config/ModelMapperConfig.class
 com/cybercrime/service/impl/AuthServiceImpl.class
+com/cybercrime/model/Feedback.class
 com/cybercrime/dto/ComplaintDto.class
 com/cybercrime/dto/UserUpdateDto.class
 com/cybercrime/config/JwtAuthenticationFilter.class
@@ -16,6 +17,7 @@ com/cybercrime/service/impl/ComplaintServiceImpl.class
 com/cybercrime/repository/ComplaintRepository.class
 com/cybercrime/service/impl/DepartmentServiceImpl.class
 com/cybercrime/controller/UserController.class
+com/cybercrime/service/EmailService.class
 com/cybercrime/dto/ComplaintStatusUpdateDto.class
 com/cybercrime/controller/AuthController.class
 com/cybercrime/controller/EvidenceController.class
@@ -47,6 +49,7 @@ com/cybercrime/config/AdminUserInitializer.class
 com/cybercrime/exception/CustomErrorResponse$CustomErrorResponseBuilder.class
 com/cybercrime/exception/FileStorageException.class
 com/cybercrime/model/User.class
+com/cybercrime/config/EmailConfig.class
 com/cybercrime/config/RequestLoggingFilter.class
 com/cybercrime/model/Department.class
 com/cybercrime/service/FeedbackService.class
@@ -59,6 +62,7 @@ com/cybercrime/controller/DepartmentController.class
 com/cybercrime/model/ComplaintStatus.class
 com/cybercrime/dto/AdminDto.class
 com/cybercrime/service/AuthService.class
+com/cybercrime/config/CorsConfig.class
 com/cybercrime/CybercrimeReportingApplication.class
 com/cybercrime/controller/AdminController.class
 com/cybercrime/service/impl/EvidenceServiceImpl.class

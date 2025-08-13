@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ComplaintService {
-    ComplaintDto createComplaint(ComplaintCreateDto complaintDto, List<MultipartFile> evidences);
+    ComplaintDto createComplaint(ComplaintCreateDto complaintDto, List<MultipartFile> evidences, Long userId);
     ComplaintDto updateStatus(Long complaintId, ComplaintStatusUpdateDto statusUpdate);
     ComplaintDto addFeedback(Long complaintId, FeedbackDto feedbackDto);
     List<ComplaintDto> getUserComplaints(Long userId);

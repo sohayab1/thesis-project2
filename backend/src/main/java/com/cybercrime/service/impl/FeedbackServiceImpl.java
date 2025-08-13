@@ -30,7 +30,7 @@ public class FeedbackServiceImpl implements FeedbackService {
             throw new IllegalStateException("Feedback already exists for this complaint");
         }
         
-        complaint.setFeedback(feedbackDto.getFeedback());
+        complaint.setFeedback(feedbackDto.getComment());
         complaint.setRating(feedbackDto.getRating());
         complaint.setFeedbackDate(LocalDateTime.now());
         

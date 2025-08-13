@@ -1,10 +1,14 @@
 package com.cybercrime.service.impl;
 
+import com.cybercrime.dto.ComplaintDto;
 import com.cybercrime.dto.DepartmentDto;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.exception.ResourceNotFoundException;
+import com.cybercrime.model.Complaint;
+import com.cybercrime.model.ComplaintStatus;
 import com.cybercrime.model.Department;
 import com.cybercrime.model.User;
+import com.cybercrime.repository.ComplaintRepository;
 import com.cybercrime.repository.DepartmentRepository;
 import com.cybercrime.repository.UserRepository;
 import com.cybercrime.service.AdminService;
@@ -14,12 +18,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
+    private final ComplaintRepository complaintRepository;
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final EntityMapperService mapper;
@@ -91,5 +98,29 @@ public class AdminServiceImpl implements AdminService {
         department.setActive(departmentDto.isActive());
         
         return mapper.toDepartmentDto(departmentRepository.save(department));
+    }
+
+    @Override
+    public List<ComplaintDto> getAllComplaints() {
+        List<Complaint> complaints = complaintRepository.findAll();
+        return complaints.stream()
+                .map(complaint -> {
+                    ComplaintDto dto = mapper.toComplaintDto(complaint);
+                    // Handle null priority
+                    dto.setPriority(complaint.getPriority() != null ? 
+                        complaint.getPriority().name() : "MEDIUM");
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Object> getComplaintStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("total", complaintRepository.count());
+        stats.put("pending", complaintRepository.countByStatus(ComplaintStatus.PENDING));
+        stats.put("inProgress", complaintRepository.countByStatus(ComplaintStatus.IN_PROGRESS));
+        stats.put("resolved", complaintRepository.countByStatus(ComplaintStatus.RESOLVED));
+        return stats;
     }
 }

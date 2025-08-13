@@ -1,11 +1,13 @@
 package com.cybercrime.controller;
 
 import com.cybercrime.dto.*;
+import com.cybercrime.security.CustomUserDetails;
 import com.cybercrime.service.ComplaintService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
@@ -21,8 +23,9 @@ public class ComplaintController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ComplaintDto> createComplaint(
             @Valid @RequestPart("complaint") ComplaintCreateDto complaintDto,
-            @RequestPart(value = "evidences", required = false) List<MultipartFile> evidences) {
-        return ResponseEntity.ok(complaintService.createComplaint(complaintDto, evidences));
+            @RequestPart(value = "evidences", required = false) List<MultipartFile> evidences,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(complaintService.createComplaint(complaintDto, evidences, userDetails.getUser().getId()));
     }
 
     @GetMapping
