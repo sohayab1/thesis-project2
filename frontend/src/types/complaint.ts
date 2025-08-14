@@ -1,11 +1,23 @@
+import { Evidence, Feedback, User } from "./user";
+
+export type ReporterType = 'victim' | 'reporter' | 'business' | 'witness';
+export type ComplaintStatus = 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED';
+export type ComplaintPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+
 export interface ComplaintCreateDto {
   title: string;
   description: string;
-  departmentId: string | number;
+  departmentId: string;
   location: string;
   incidentDate: string;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH';
-  reporterType: 'victim' | 'reporter' | 'business' | 'witness';
+  priority: ComplaintPriority;
+  reporterType: ReporterType;
+  suspect?: {
+    name: string;
+    contact: string;
+    address: string;
+    description: string;
+  };
 }
 
 export interface Department {
@@ -13,20 +25,15 @@ export interface Department {
   name: string;
 }
 
-export interface Complaint {
+export interface Complaint extends Omit<ComplaintCreateDto, 'departmentId'> {
   id: number;
-  title: string;
-  description: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED';
+  status: ComplaintStatus;
   createdAt: string;
-  departmentId: number;
-  department?: {
-    id: number;
-    name: string;
-  };
-  feedback?: {
-    rating: number;
-    comment: string;
-    createdAt: string;
-  };
+  resolvedDate?: string;
+  userId: number;
+  user?: User;
+  departmentId?: number;
+  department?: Department;
+  evidences?: Evidence[];
+  feedback?: Feedback;
 }

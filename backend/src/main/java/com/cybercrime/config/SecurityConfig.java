@@ -48,6 +48,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers(publicPaths).permitAll()
+                   .requestMatchers("/admin/**").hasRole("ADMIN")
                    .anyRequest().authenticated();
                 log.debug("Security paths configured with patterns: {}", String.join(", ", publicPaths));
             })

@@ -15,4 +15,6 @@ public interface AdminService {
     DepartmentDto updateDepartment(Long departmentId, DepartmentDto departmentDto);
     List<ComplaintDto> getAllComplaints();
     Map<String, Object> getComplaintStatistics();
+    ComplaintDto resolveComplaint(Long complaintId);
+    ComplaintDto assignDepartment(Long complaintId, Long departmentId);
 }

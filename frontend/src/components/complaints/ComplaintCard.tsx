@@ -8,25 +8,47 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import type { Complaint } from "@/types/complaint";
+import type { Complaint, ComplaintStatus } from "@/types";
+import { toast } from "sonner";
+import { feedback } from "@/services/api";
 
 interface ComplaintCardProps {
   complaint: Complaint;
-  onFeedback?: () => void;
+  onResolve: () => void;
 }
 
-export function ComplaintCard({ complaint, onFeedback }: ComplaintCardProps) {
+export function ComplaintCard({ complaint, onResolve }: ComplaintCardProps) {
   const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
-  const getStatusColor = (status: string) => {
-    const colors = {
+  const handleFeedbackSubmit = async (data: { rating: number; comment: string }) => {
+    try {
+      await feedback.submit(complaint.id, data);
+      toast.success("Feedback submitted successfully");
+      setShowFeedback(false); // Close the form on success
+      setFeedbackError(null);
+      onResolve(); // Refresh the complaints list
+    } catch (error: any) {
+      if (error.message.includes('already exists')) {
+        toast.error("Feedback already exists for this complaint");
+        setShowFeedback(false); // Close the form if feedback exists
+      } else {
+        setFeedbackError(error.message);
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const getStatusColor = (status: ComplaintStatus): string => {
+    const colors: Record<ComplaintStatus, string> = {
       PENDING: "bg-yellow-500",
       IN_PROGRESS: "bg-blue-500",
       RESOLVED: "bg-green-500",
       REJECTED: "bg-red-500",
     };
-    return colors[status] || "bg-gray-500";
+    return colors[status];
   };
 
   const canGiveFeedback = complaint.status === "RESOLVED" && !complaint.feedback;
@@ -36,45 +58,72 @@ export function ComplaintCard({ complaint, onFeedback }: ComplaintCardProps) {
       <Card>
         <CardHeader>
           <div className="flex justify-between items-start">
-            <CardTitle className="text-lg">{complaint.title}</CardTitle>
-            <Badge className={getStatusColor(complaint.status)}>
-              {complaint.status}
-            </Badge>
+            <div>
+              <CardTitle>{complaint.title}</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Filed by: {complaint.user?.name || "Unknown"}
+              </p>
+            </div>
+            <div className="flex flex-col items-end space-y-2">
+              <Badge className={getStatusColor(complaint.status)}>
+                {complaint.status}
+              </Badge>
+              {complaint.status !== "RESOLVED" && (
+                <Button size="sm" onClick={onResolve}>
+                  Mark as Resolved
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              {complaint.description}
-            </p>
-
-            <div className="text-sm text-muted-foreground">
-              <p>
-                Filed on:{" "}
-                {new Date(complaint.createdAt).toLocaleDateString()}
-              </p>
-              {complaint.department && (
-                <p>Department: {complaint.department.name}</p>
-              )}
+            <div>
+              <h4 className="font-medium">Description</h4>
+              <p>{complaint.description}</p>
             </div>
 
+            {complaint.suspect && (
+              <div>
+                <h4 className="font-medium">Suspect Information</h4>
+                <p>Name: {complaint.suspect.name}</p>
+                <p>Contact: {complaint.suspect.contact}</p>
+                <p>Address: {complaint.suspect.address}</p>
+              </div>
+            )}
+
             {complaint.feedback && (
-              <div className="border-t pt-4 mt-4">
-                <p className="text-sm font-medium">Your Feedback</p>
-                <div className="mt-2">
-                  <p className="text-sm">
-                    Rating: {complaint.feedback.rating}/5
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {complaint.feedback.comment}
-                  </p>
+              <div>
+                <h4 className="font-medium">Feedback</h4>
+                <div className="flex items-center gap-2">
+                  <p>Rating: {complaint.feedback.rating}/5</p>
+                  <p>{complaint.feedback.comment}</p>
                 </div>
               </div>
             )}
 
-            {canGiveFeedback && onFeedback && (
+            {complaint.evidences && complaint.evidences.length > 0 && (
+              <div>
+                <h4 className="font-medium">Evidence Files</h4>
+                <div className="flex gap-2">
+                  {complaint.evidences.map((evidence, index) => (
+                    <Button key={index} variant="outline" asChild>
+                      <a
+                        href={`/api/evidence/${evidence.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Evidence {index + 1}
+                      </a>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {canGiveFeedback && (
               <Button
-                onClick={onFeedback}
+                onClick={() => setShowFeedback(true)}
                 variant="outline"
                 className="w-full mt-4"
               >
@@ -85,15 +134,30 @@ export function ComplaintCard({ complaint, onFeedback }: ComplaintCardProps) {
         </CardContent>
       </Card>
 
-      <Dialog open={showFeedback} onOpenChange={setShowFeedback}>
+      <Dialog 
+        open={showFeedback} 
+        onOpenChange={(open) => {
+          setShowFeedback(open);
+          if (!open) {
+            setFeedbackError(null); // Clear error when dialog closes
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Submit Feedback</DialogTitle>
+            <DialogDescription>
+              Please share your experience about how your complaint was handled.
+            </DialogDescription>
           </DialogHeader>
           <FeedbackForm
             complaintId={complaint.id}
-            onSuccess={() => setShowFeedback(false)}
-            onCancel={() => setShowFeedback(false)}
+            onSubmit={handleFeedbackSubmit}
+            onCancel={() => {
+              setShowFeedback(false);
+              setFeedbackError(null);
+            }}
+            error={feedbackError}
           />
         </DialogContent>
       </Dialog>

@@ -1,6 +1,8 @@
 package com.cybercrime.controller;
 
 import com.cybercrime.dto.*;
+import com.cybercrime.exception.UnauthorizedException;
+import com.cybercrime.model.UserRole;
 import com.cybercrime.security.CustomUserDetails;
 import com.cybercrime.service.ComplaintService;
 
@@ -66,5 +68,20 @@ public class ComplaintController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DEPARTMENT_ADMIN')")
     public ResponseEntity<List<ComplaintDto>> getComplaintsByDepartment(@PathVariable Long departmentId) {
         return ResponseEntity.ok(complaintService.getComplaintsByDepartment(departmentId));
+    }
+
+    @PutMapping("/{id}/resolve")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<ComplaintDto> resolveComplaint(
+        @PathVariable Long id,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        // Only allow users to resolve their own complaints or admins to resolve any complaint
+        ComplaintDto complaint = complaintService.getComplaint(id);
+        if (userDetails.getUser().getRole() != UserRole.ADMIN && 
+            !complaint.getUser().getId().equals(userDetails.getUser().getId())) {
+            throw new UnauthorizedException("You can only resolve your own complaints");
+        }
+        return ResponseEntity.ok(complaintService.resolveComplaint(id));
     }
 }

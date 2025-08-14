@@ -2,38 +2,41 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { feedback } from "@/services/api"
 
 interface FeedbackFormProps {
-  complaintId: string;
-  onSuccess?: () => void;
+  complaintId: number;
+  onSubmit: (data: { rating: number; comment: string }) => Promise<void>;
   onCancel?: () => void;
+  error?: string | null;
 }
 
-export function FeedbackForm({ complaintId, onSuccess, onCancel }: FeedbackFormProps) {
-  const [loading, setLoading] = useState(false)
+export function FeedbackForm({ complaintId, onSubmit, onCancel, error }: FeedbackFormProps) {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    feedback: "",
-    rating: 0
-  })
+    rating: 5,
+    comment: ''
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
+    e.preventDefault();
+    setLoading(true);
+    
     try {
-      await feedback.submit(complaintId, formData)
-      toast.success("Feedback submitted successfully")
-      onSuccess?.()
+      await onSubmit(formData);
+      // Don't reset form or handle success here - let parent component handle it
     } catch (error) {
-      toast.error("Failed to submit feedback")
+      // Error handling is done in parent component
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="text-red-500 text-sm">{error}</div>
+      )}
+
       <div>
         <label className="text-sm font-medium mb-2 block">Rating</label>
         <div className="flex gap-2">
@@ -53,8 +56,8 @@ export function FeedbackForm({ complaintId, onSuccess, onCancel }: FeedbackFormP
       <div>
         <label className="text-sm font-medium mb-2 block">Feedback</label>
         <Textarea
-          value={formData.feedback}
-          onChange={(e) => setFormData(prev => ({ ...prev, feedback: e.target.value }))}
+          value={formData.comment}
+          onChange={(e) => setFormData(prev => ({ ...prev, comment: e.target.value }))}
           placeholder="Please share your experience..."
           required
         />

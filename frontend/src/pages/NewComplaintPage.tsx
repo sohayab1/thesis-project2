@@ -7,24 +7,37 @@ import { Textarea } from "@/components/ui/textarea"
 import { complaints, departments } from "@/services/api"
 import { toast } from "sonner"
 import { FeedbackModal } from "@/components/feedback/FeedbackModal"
+import type { ComplaintCreateDto, ReporterType, ComplaintPriority } from "@/types";
 
 interface Department {
   id: number;
   name: string;
 }
 
-export function NewComplaintPage() {
-  const [loading, setLoading] = useState(false)
-  const [departmentList, setDepartmentList] = useState<Department[]>([])
-  const [complaintData, setComplaintData] = useState({
+interface ComplaintFormData extends ComplaintCreateDto {
+    // All fields are inherited from ComplaintCreateDto
+}
+
+const initialFormData: ComplaintFormData = {
     title: "",
     description: "",
     departmentId: "",
     location: "",
-    incidentDate: new Date().toISOString().split('T')[0],
+    incidentDate: "",
     priority: "MEDIUM",
-    reporterType: "victim"
-  })
+    reporterType: "victim",
+    suspect: {
+        name: "",
+        contact: "",
+        address: "",
+        description: ""
+    }
+};
+
+export function NewComplaintPage() {
+  const [loading, setLoading] = useState(false)
+  const [departmentList, setDepartmentList] = useState<Department[]>([])
+  const [complaintData, setComplaintData] = useState<ComplaintFormData>(initialFormData)
   const [evidenceFiles, setEvidenceFiles] = useState<File[]>([])
   const [showFeedback, setShowFeedback] = useState(false)
   const [submittedComplaintId, setSubmittedComplaintId] = useState<number | null>(null)

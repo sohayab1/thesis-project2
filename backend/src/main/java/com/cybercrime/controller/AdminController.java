@@ -4,11 +4,11 @@ import com.cybercrime.dto.ComplaintDto;
 import com.cybercrime.dto.DepartmentDto;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.service.AdminService;
+import com.cybercrime.service.EmailService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin")  // Remove the /api prefix
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
-@CrossOrigin(origins = "http://localhost:5173")  // Add this line
 public class AdminController {
     private final AdminService adminService;
+    private final EmailService emailService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getAllUsers() {
@@ -34,14 +33,18 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getPendingUsers());
     }
 
-    @PutMapping("/approve-user/{userId}")
+    @PutMapping("/users/{userId}/approve")
     public ResponseEntity<UserDto> approveUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(adminService.approveUser(userId));
+        UserDto user = adminService.approveUser(userId);
+        emailService.sendApprovalEmail(user.getEmail(), user.getName(), true);
+        return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/reject-user/{userId}")
+    @PutMapping("/users/{userId}/reject")
     public ResponseEntity<UserDto> rejectUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(adminService.rejectUser(userId));
+        UserDto user = adminService.rejectUser(userId);
+        emailService.sendApprovalEmail(user.getEmail(), user.getName(), false);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/departments")
@@ -56,14 +59,25 @@ public class AdminController {
 
     @GetMapping("/complaints")
     @PreAuthorize("hasRole('ADMIN')")
-    @Cacheable(value = "adminComplaints", key = "'all'")
     public ResponseEntity<List<ComplaintDto>> getAllComplaints() {
-        List<ComplaintDto> complaints = adminService.getAllComplaints();
-        return ResponseEntity.ok(complaints);
+        return ResponseEntity.ok(adminService.getAllComplaints());
     }
 
     @GetMapping("/complaints/statistics")
     public ResponseEntity<Map<String, Object>> getComplaintStatistics() {
         return ResponseEntity.ok(adminService.getComplaintStatistics());
+    }
+
+    @PutMapping("/complaints/{complaintId}/resolve")
+    public ResponseEntity<ComplaintDto> resolveComplaint(@PathVariable Long complaintId) {
+        return ResponseEntity.ok(adminService.resolveComplaint(complaintId));
+    }
+
+    @PutMapping("/complaints/{complaintId}/department/{departmentId}")
+    public ResponseEntity<ComplaintDto> assignDepartment(
+        @PathVariable Long complaintId,
+        @PathVariable Long departmentId
+    ) {
+        return ResponseEntity.ok(adminService.assignDepartment(complaintId, departmentId));
     }
 }

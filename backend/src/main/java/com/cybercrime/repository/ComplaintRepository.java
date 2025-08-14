@@ -38,4 +38,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     Optional<Complaint> findByIdWithEvidences(@Param("id") Long id);
     
     Long countByStatus(ComplaintStatus status);
+
+    @Query("SELECT c FROM Complaint c LEFT JOIN FETCH c.user LEFT JOIN FETCH c.department")
+    List<Complaint> findAllWithUserAndDepartment();
 }

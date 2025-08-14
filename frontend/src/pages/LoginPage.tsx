@@ -18,20 +18,17 @@ export function LoginPage() {
     setLoading(true)
 
     try {
-      const response = await login(email, password)
-      console.log('Login response:', response) // Add this for debugging
-      
-      if (response && response.user) {
-        if (response.user.role === 'ADMIN') {
-          navigate('/admin/dashboard')
-        } else {
-          navigate('/dashboard')
-        }
-        toast.success('Login successful')
+      await login(email, password)
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (user.role === 'ADMIN') {
+        navigate('/admin/dashboard')
+      } else {
+        navigate('/dashboard')
       }
+      toast.success('Login successful')
     } catch (error: any) {
       console.error('Login error:', error)
-      toast.error(error.response?.data?.message || "Invalid credentials")
+      toast.error('Login failed')
     } finally {
       setLoading(false)
     }

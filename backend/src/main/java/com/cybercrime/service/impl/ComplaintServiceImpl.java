@@ -74,6 +74,16 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint complaint = complaintRepository.findById(complaintId)
             .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
         
+        // Check if feedback already exists
+        if (complaint.getFeedback() != null) {
+            throw new IllegalStateException("Feedback already exists for this complaint");
+        }
+        
+        // Add feedback only if complaint is resolved
+        if (complaint.getStatus() != ComplaintStatus.RESOLVED) {
+            throw new IllegalStateException("Can only add feedback to resolved complaints");
+        }
+        
         complaint.setFeedback(feedbackDto.getComment());
         complaint.setRating(feedbackDto.getRating());
         complaint.setFeedbackDate(LocalDateTime.now());
@@ -115,6 +125,18 @@ public class ComplaintServiceImpl implements ComplaintService {
             throw new ResourceNotFoundException("Complaint not found");
         }
         complaintRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public ComplaintDto resolveComplaint(Long complaintId) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+            .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+        
+        complaint.setStatus(ComplaintStatus.RESOLVED);
+        complaint.setResolvedDate(LocalDateTime.now());
+        
+        return mapper.toComplaintDto(complaintRepository.save(complaint));
     }
 
     private Evidence createEvidence(MultipartFile file, Complaint complaint) {

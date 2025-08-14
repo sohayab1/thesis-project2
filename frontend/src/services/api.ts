@@ -1,4 +1,4 @@
-import { ComplaintCreateDto } from '@/types/complaint';
+import { ComplaintCreateDto, Department } from '@/types/complaint';
 import axios from 'axios';
 
 const api = axios.create({
@@ -77,7 +77,7 @@ export const auth = {
 };
 
 export const departments = {
-  getAll: async () => {
+  getAll: async (): Promise<Department[]> => {
     const response = await api.get('/departments');
     return response.data;
   }
@@ -85,8 +85,22 @@ export const departments = {
 
 export const feedback = {
   submit: async (complaintId: number, data: { rating: number; comment: string }) => {
-    const response = await api.post(`/feedback/${complaintId}`, data);
-    return response.data;
+    try {
+      // Don't check for existing feedback first - let the backend handle it
+      const response = await api.post(`/feedback/${complaintId}`, data);
+      return response.data;
+    } catch (error: any) {
+      // Handle specific error cases
+      if (error.response?.status === 404) {
+        // Not found - complaint doesn't exist
+        throw new Error('Complaint not found');
+      } else if (error.response?.data?.message?.includes('already exists')) {
+        // Feedback already exists
+        throw new Error('Feedback already exists for this complaint');
+      }
+      // Other errors
+      throw new Error(error.response?.data?.message || 'Failed to submit feedback');
+    }
   },
   get: async (complaintId: number) => {
     const response = await api.get(`/feedback/${complaintId}`);
@@ -139,6 +153,15 @@ export const complaints = {
       throw error;
     }
   },
+  markAsResolved: async (complaintId: number) => {
+    try {
+      const response = await api.put(`/complaints/${complaintId}/resolve`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to resolve complaint:', error);
+      throw error;
+    }
+  }
 };
 
 export const users = {
@@ -153,22 +176,51 @@ export const users = {
 };
 
 export const admin = {
-  getAllComplaints: async () => {
-    const response = await api.get('/admin/complaints');
-    return response.data;
-  },
-  getPendingUsers: async () => {
-    const response = await api.get('/admin/pending-users');
-    return response.data;
-  },
-  approveUser: async (userId: number) => {
-    const response = await api.put(`/admin/users/${userId}/approve`);
-    return response.data;
-  },
-  rejectUser: async (userId: number) => {
-    const response = await api.put(`/admin/users/${userId}/reject`);
-    return response.data;
-  }
+    getAllComplaints: async () => {
+        try {
+            const response = await api.get('/admin/complaints');
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch complaints:', error);
+            throw error;
+        }
+    },
+    getPendingUsers: async () => {
+        try {
+            const response = await api.get('/admin/pending-users');
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch pending users:', error);
+            throw error;
+        }
+    },
+    approveUser: async (userId: number) => {
+        try {
+            const response = await api.put(`/admin/users/${userId}/approve`);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to approve user:', error);
+            throw error;
+        }
+    },
+    rejectUser: async (userId: number) => {
+        try {
+            const response = await api.put(`/admin/users/${userId}/reject`);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to reject user:', error);
+            throw error;
+        }
+    },
+    resolveComplaint: async (complaintId: number) => {
+        try {
+            const response = await api.put(`/admin/complaints/${complaintId}/resolve`);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to resolve complaint:', error);
+            throw error;
+        }
+    }
 };
 
 export default api;
