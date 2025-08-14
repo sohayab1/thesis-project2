@@ -1,78 +1,69 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { useAuth } from "@/hooks/useAuth"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Layout } from "@/components/layout/Layout"
-import { toast } from "sonner"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+import { Layout } from "@/components/layout/Layout";
+import { GalleryVerticalEnd } from "lucide-react";
+import { LoginForm } from "@/components/login-form";
 
 export function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
-  const { login } = useAuth()
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
 
     try {
-      await login(email, password)
+      await login(formData.get('email') as string, formData.get('password') as string);
+      toast.success('Login successful');
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       if (user.role === 'ADMIN') {
-        navigate('/admin/dashboard')
+        navigate('/admin/dashboard');
       } else {
-        navigate('/dashboard')
+        navigate('/dashboard');
       }
-      toast.success('Login successful')
-    } catch (error: any) {
-      console.error('Login error:', error)
-      toast.error('Login failed')
+    } catch (error) {
+      toast.error('Invalid credentials');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="w-full max-w-[400px] space-y-6">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold">Welcome back</h1>
-            <p className="text-muted-foreground">Login to your account</p>
+      <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+        <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex">
+          <div className="absolute inset-0 bg-zinc-900" />
+          <div className="relative z-20 flex items-center text-lg font-medium">
+            <GalleryVerticalEnd className="mr-2 h-6 w-6" />
+            CyberCrime Reporting
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+          <div className="relative z-20 mt-auto">
+            <blockquote className="space-y-2">
+              <p className="text-lg">
+                "Together we can make the digital world safer for everyone."
+              </p>
+              <footer className="text-sm">Cybercrime Prevention Unit</footer>
+            </blockquote>
+          </div>
+        </div>
+        <div className="lg:p-8">
+          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            <div className="flex flex-col space-y-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Welcome back
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Enter your credentials to sign in to your account
+              </p>
             </div>
-            <div className="space-y-2">
-              <Input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Loading..." : "Login"}
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Link to="/register" className="text-primary hover:underline">
-                Register
-              </Link>
-            </p>
-          </form>
+            <LoginForm />
+          </div>
         </div>
       </div>
     </Layout>
-  )
+  );
 }
