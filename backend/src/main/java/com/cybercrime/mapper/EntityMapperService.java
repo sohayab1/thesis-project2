@@ -51,11 +51,18 @@ public class EntityMapperService {
         dto.setId(complaint.getId());
         dto.setTitle(complaint.getTitle());
         dto.setDescription(complaint.getDescription());
-        dto.setStatus(complaint.getStatus().name());  // Convert enum to string
-        dto.setCreatedAt(complaint.getCreatedAt());
-        dto.setLocation(complaint.getLocation());
-        dto.setIncidentDate(complaint.getIncidentDate());
-        dto.setPriority(complaint.getPriority().name());  // Convert enum to string
+        dto.setStatus(complaint.getStatus());  // Now passing enum directly
+        dto.setPriority(complaint.getPriority());  // Now passing enum directly
+        dto.setSuspectInfo(complaint.getSuspectInfo());
+        dto.setSuspectSocialMedia(complaint.getSuspectSocialMedia());
+        dto.setSuspectPhoneNumber(complaint.getSuspectPhoneNumber());
+        dto.setRating(complaint.getRating());
+        dto.setFeedback(complaint.getFeedback());
+        dto.setFeedbackDate(complaint.getFeedbackDate());
+        
+        if (complaint.getEvidences() != null) {
+            dto.setEvidences(mapList(complaint.getEvidences(), EvidenceDto.class));
+        }
         
         if (complaint.getUser() != null) {
             dto.setUser(toUserDto(complaint.getUser()));
@@ -68,14 +75,16 @@ public class EntityMapperService {
         return dto;
     }
 
-    public Complaint toComplaint(ComplaintCreateDto complaintCreateDto) {
+    public Complaint toComplaint(ComplaintCreateDto dto) {
         Complaint complaint = new Complaint();
-        complaint.setTitle(complaintCreateDto.getTitle());
-        complaint.setDescription(complaintCreateDto.getDescription());
-        complaint.setLocation(complaintCreateDto.getLocation());
-        complaint.setIncidentDate(complaintCreateDto.getIncidentDate());
-        // Changed: convert string to enum directly
-        complaint.setPriority(Complaint.ComplaintPriority.valueOf(complaintCreateDto.getPriority()));
+        complaint.setTitle(dto.getTitle());
+        complaint.setDescription(dto.getDescription());
+        complaint.setLocation(dto.getLocation());
+        complaint.setIncidentDate(dto.getIncidentDate());
+        complaint.setSuspectInfo(dto.getSuspectInfo());
+        complaint.setSuspectSocialMedia(dto.getSuspectSocialMedia());
+        complaint.setSuspectPhoneNumber(dto.getSuspectPhoneNumber());
+        complaint.setPriority(ComplaintPriority.MEDIUM); // Default priority
         complaint.setStatus(ComplaintStatus.PENDING);
         complaint.setCreatedAt(LocalDateTime.now());
         return complaint;

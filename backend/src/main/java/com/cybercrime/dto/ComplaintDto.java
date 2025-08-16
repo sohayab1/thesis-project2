@@ -1,6 +1,9 @@
 package com.cybercrime.dto;
 
 import lombok.Data;
+import com.cybercrime.model.ComplaintPriority;
+import com.cybercrime.model.ComplaintStatus;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -9,14 +12,18 @@ public class ComplaintDto {
     private Long id;
     private String title;
     private String description;
-    private String status;
-    private LocalDateTime createdAt;
+    private ComplaintStatus status;
+    private ComplaintPriority priority;
     private String location;
     private LocalDateTime incidentDate;
-    private String priority;
-    private LocalDateTime resolvedDate;
+    private LocalDateTime createdAt;
+    private String suspectInfo;
+    private String suspectSocialMedia;
+    private String suspectPhoneNumber;
+    private Integer rating;
+    private String feedback;
+    private LocalDateTime feedbackDate;
+    private List<EvidenceDto> evidences;
     private UserDto user;
     private DepartmentDto department;
-    private List<EvidenceDto> evidences;
-    private FeedbackDto feedback;
 }

@@ -48,7 +48,15 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers(publicPaths).permitAll()
+                   .requestMatchers("/complaints/user/**").authenticated()
                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                   .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                   .requestMatchers("/api/complaints/department").hasRole("DEPARTMENT_ADMIN")
+                   .requestMatchers("/api/complaints/all").hasRole("ADMIN")
+                   .requestMatchers("/api/admin/pending-users").hasRole("ADMIN")
+                   .requestMatchers("/api/admin/complaints").hasRole("ADMIN")
+                   .requestMatchers("/api/departments/{id}/complaints")
+                    .hasAnyRole("ADMIN", "DEPARTMENT_ADMIN")
                    .anyRequest().authenticated();
                 log.debug("Security paths configured with patterns: {}", String.join(", ", publicPaths));
             })

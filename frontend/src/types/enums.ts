@@ -1,7 +1,7 @@
 export enum UserRole {
-    ADMIN = 'ADMIN',
-    USER = 'USER',
-    DEPARTMENT_ADMIN = 'DEPARTMENT_ADMIN'
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  DEPARTMENT_ADMIN = 'DEPARTMENT_ADMIN'
 }
 
 export enum ComplaintStatus {

@@ -8,12 +8,10 @@ import java.time.LocalDateTime;
 public class ComplaintCreateDto {
     private String title;
     private String description;
-
-    private String location;
-
-    private LocalDateTime incidentDate;
-
-    private String priority;  // This should match one of the ComplaintPriority enum values
-
     private Long departmentId;
+    private String location;
+    private LocalDateTime incidentDate;
+    private String suspectInfo;
+    private String suspectSocialMedia;
+    private String suspectPhoneNumber;
 }

@@ -1,4 +1,6 @@
 import { ComplaintCreateDto, Department } from '@/types/complaint';
+import { UserDto, ComplaintDto, DepartmentDto, FeedbackDto } from "@/types/dto";
+import { User } from '@/types/user';
 import axios from 'axios';
 
 const api = axios.create({
@@ -31,11 +33,19 @@ api.interceptors.response.use(
 export const auth = {
   login: async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      console.log('API login response:', response.data); // Add this for debugging
+      const response = await api.post<{
+        token: string;
+        user: User;
+      }>('/auth/login', { email, password });
+      
+      // Store token in localStorage
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
+      
       return response.data;
     } catch (error) {
-      console.error('API login error:', error);
+      console.error('Login error:', error);
       throw error;
     }
   },
@@ -112,7 +122,6 @@ export const complaints = {
   create: async (complaintData: ComplaintCreateDto, evidenceFiles?: File[]) => {
     try {
       const formData = new FormData();
-      // Convert departmentId to number
       const dataToSend = {
         ...complaintData,
         departmentId: Number(complaintData.departmentId),
@@ -129,6 +138,7 @@ export const complaints = {
         });
       }
 
+      // Fix the API endpoint
       const response = await api.post('/complaints', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -144,12 +154,31 @@ export const complaints = {
     const response = await api.get('/complaints');
     return response.data;
   },
-  getUserComplaints: async (userId: number) => {
+  getUserComplaints: async (userId: number): Promise<ComplaintDto[]> => {
     try {
+      // Remove extra 'api' from URL since baseURL already has it
       const response = await api.get(`/complaints/user/${userId}`);
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch user complaints:', error);
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+  getDepartmentComplaints: async (): Promise<ComplaintDto[]> => {
+    try {
+      const response = await api.get('/complaints/department');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch department complaints:', error);
+      throw error;
+    }
+  },
+  getAllComplaints: async (): Promise<ComplaintDto[]> => {
+    try {
+      const response = await api.get('/complaints/all');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch all complaints:', error);
       throw error;
     }
   },
@@ -161,7 +190,7 @@ export const complaints = {
       console.error('Failed to resolve complaint:', error);
       throw error;
     }
-  }
+  },
 };
 
 export const users = {
@@ -176,51 +205,52 @@ export const users = {
 };
 
 export const admin = {
-    getAllComplaints: async () => {
-        try {
-            const response = await api.get('/admin/complaints');
-            return response.data;
-        } catch (error) {
-            console.error('Failed to fetch complaints:', error);
-            throw error;
-        }
-    },
-    getPendingUsers: async () => {
-        try {
-            const response = await api.get('/admin/pending-users');
-            return response.data;
-        } catch (error) {
-            console.error('Failed to fetch pending users:', error);
-            throw error;
-        }
-    },
-    approveUser: async (userId: number) => {
-        try {
-            const response = await api.put(`/admin/users/${userId}/approve`);
-            return response.data;
-        } catch (error) {
-            console.error('Failed to approve user:', error);
-            throw error;
-        }
-    },
-    rejectUser: async (userId: number) => {
-        try {
-            const response = await api.put(`/admin/users/${userId}/reject`);
-            return response.data;
-        } catch (error) {
-            console.error('Failed to reject user:', error);
-            throw error;
-        }
-    },
-    resolveComplaint: async (complaintId: number) => {
-        try {
-            const response = await api.put(`/admin/complaints/${complaintId}/resolve`);
-            return response.data;
-        } catch (error) {
-            console.error('Failed to resolve complaint:', error);
-            throw error;
-        }
+  getPendingUsers: async (): Promise<UserDto[]> => {
+    const response = await api.get('/admin/users/pending');
+    return response.data;
+  },
+
+  getAllComplaints: async (): Promise<ComplaintDto[]> => {
+    try {
+      // Remove /admin from URL since context-path already includes /api
+      const response = await api.get('/complaints/all');
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch all complaints:', error);
+      throw error;
     }
+  },
+
+  approveUser: async (userId: number): Promise<UserDto> => {
+    try {
+      // Fix: Remove extra 'api' from the URL
+      const response = await api.put(`/admin/users/${userId}/approve`);
+      return response.data;
+    } catch (error: any) {
+      console.error('Error approving user:', error);
+      throw error;
+    }
+  },
+
+  rejectUser: async (userId: number) => {
+    try {
+      // Fix: Remove extra 'api' from the URL
+      const response = await api.put(`/admin/users/${userId}/reject`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to reject user:', error);
+      throw error;
+    }
+  },
+  resolveComplaint: async (complaintId: number) => {
+    try {
+      const response = await api.put(`/admin/complaints/${complaintId}/resolve`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to resolve complaint:', error);
+      throw error;
+    }
+  },
 };
 
 export default api;

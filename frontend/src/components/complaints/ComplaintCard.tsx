@@ -10,16 +10,24 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import type { Complaint, ComplaintStatus } from "@/types";
+import { ComplaintDto } from "@/types/dto";
 import { toast } from "sonner";
 import { feedback } from "@/services/api";
+import { ComplaintStatus } from "@/types/complaint";
 
 interface ComplaintCardProps {
-  complaint: Complaint;
-  onResolve: () => void;
+  complaint: ComplaintDto;
+  onFeedback?: () => void | Promise<void>;
+  onResolve?: () => Promise<void>;
+  showResolveButton?: boolean;
 }
 
-export function ComplaintCard({ complaint, onResolve }: ComplaintCardProps) {
+export function ComplaintCard({
+  complaint,
+  onFeedback,
+  onResolve,
+  showResolveButton,
+}: ComplaintCardProps) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
 
@@ -68,7 +76,7 @@ export function ComplaintCard({ complaint, onResolve }: ComplaintCardProps) {
               <Badge className={getStatusColor(complaint.status)}>
                 {complaint.status}
               </Badge>
-              {complaint.status !== "RESOLVED" && (
+              {showResolveButton && complaint.status !== "RESOLVED" && (
                 <Button size="sm" onClick={onResolve}>
                   Mark as Resolved
                 </Button>
@@ -78,46 +86,42 @@ export function ComplaintCard({ complaint, onResolve }: ComplaintCardProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div>
-              <h4 className="font-medium">Description</h4>
-              <p>{complaint.description}</p>
-            </div>
-
-            {complaint.suspect && (
+            {complaint.user && (
+              <div>
+                <h4 className="font-medium">Reported By</h4>
+                <p>{complaint.user.name}</p>
+              </div>
+            )}
+            
+            {complaint.suspectInfo && (
               <div>
                 <h4 className="font-medium">Suspect Information</h4>
-                <p>Name: {complaint.suspect.name}</p>
-                <p>Contact: {complaint.suspect.contact}</p>
-                <p>Address: {complaint.suspect.address}</p>
+                <p>{complaint.suspectInfo}</p>
+                {complaint.suspectSocialMedia && (
+                  <p>Social Media: {complaint.suspectSocialMedia}</p>
+                )}
+                {complaint.suspectPhoneNumber && (
+                  <p>Phone: {complaint.suspectPhoneNumber}</p>
+                )}
               </div>
             )}
 
             {complaint.feedback && (
               <div>
                 <h4 className="font-medium">Feedback</h4>
-                <div className="flex items-center gap-2">
-                  <p>Rating: {complaint.feedback.rating}/5</p>
-                  <p>{complaint.feedback.comment}</p>
-                </div>
+                <p>Rating: {complaint.rating}/5</p>
+                <p>{complaint.feedback}</p>
               </div>
             )}
 
             {complaint.evidences && complaint.evidences.length > 0 && (
               <div>
                 <h4 className="font-medium">Evidence Files</h4>
-                <div className="flex gap-2">
-                  {complaint.evidences.map((evidence, index) => (
-                    <Button key={index} variant="outline" asChild>
-                      <a
-                        href={`/api/evidence/${evidence.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Evidence {index + 1}
-                      </a>
-                    </Button>
+                <ul>
+                  {complaint.evidences.map(evidence => (
+                    <li key={evidence.id}>{evidence.filePath}</li>
                   ))}
-                </div>
+                </ul>
               </div>
             )}
 

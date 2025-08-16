@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { complaints, departments } from "@/services/api"
 import { toast } from "sonner"
 import { FeedbackModal } from "@/components/feedback/FeedbackModal"
-import type { ComplaintCreateDto, ReporterType, ComplaintPriority } from "@/types";
+import type { ComplaintCreateDto, ReporterType, ComplaintPriority } from "@/types/complaint";
 
 interface Department {
   id: number;
@@ -24,14 +24,9 @@ const initialFormData: ComplaintFormData = {
     departmentId: "",
     location: "",
     incidentDate: "",
-    priority: "MEDIUM",
-    reporterType: "victim",
-    suspect: {
-        name: "",
-        contact: "",
-        address: "",
-        description: ""
-    }
+    suspectInfo: "",
+    suspectSocialMedia: "",
+    suspectPhoneNumber: "",
 };
 
 export function NewComplaintPage() {
@@ -169,20 +164,49 @@ export function NewComplaintPage() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="priority" className="text-sm font-medium">Priority</label>
-            <select
-              id="priority"
-              className="w-full rounded-md border p-2"
-              value={complaintData.priority}
+            <label htmlFor="suspectInfo" className="text-sm font-medium">
+              Suspect Information
+            </label>
+            <Textarea
+              id="suspectInfo"
+              value={complaintData.suspectInfo}
               onChange={(e) => setComplaintData(prev => ({
                 ...prev,
-                priority: e.target.value as any
+                suspectInfo: e.target.value
               }))}
-            >
-              <option value="LOW">Low</option>
-              <option value="MEDIUM">Medium</option>
-              <option value="HIGH">High</option>
-            </select>
+              placeholder="Provide any information about the suspect"
+              rows={4}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="suspectSocialMedia" className="text-sm font-medium">
+              Suspect Social Media Links
+            </label>
+            <Input
+              id="suspectSocialMedia"
+              value={complaintData.suspectSocialMedia}
+              onChange={(e) => setComplaintData(prev => ({
+                ...prev,
+                suspectSocialMedia: e.target.value
+              }))}
+              placeholder="Enter social media profile links"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="suspectPhoneNumber" className="text-sm font-medium">
+              Suspect Phone Number
+            </label>
+            <Input
+              id="suspectPhoneNumber"
+              value={complaintData.suspectPhoneNumber}
+              onChange={(e) => setComplaintData(prev => ({
+                ...prev,
+                suspectPhoneNumber: e.target.value
+              }))}
+              placeholder="Enter suspect's phone number"
+            />
           </div>
 
           <div className="space-y-2">

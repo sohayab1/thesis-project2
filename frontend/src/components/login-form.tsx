@@ -21,9 +21,12 @@ export function LoginForm({
     const formData = new FormData(e.currentTarget);
 
     try {
-      await login(formData.get('email') as string, formData.get('password') as string);
+      await login(
+        formData.get('email') as string,
+        formData.get('password') as string
+      );
+      
       toast.success('Login successful');
-      navigate('/dashboard');
     } catch (error) {
       toast.error('Invalid credentials');
     } finally {

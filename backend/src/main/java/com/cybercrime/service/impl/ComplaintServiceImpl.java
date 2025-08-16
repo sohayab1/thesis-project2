@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
@@ -24,11 +26,16 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public ComplaintDto createComplaint(ComplaintCreateDto complaintDto, List<MultipartFile> evidences, Long userId) {
         Complaint complaint = mapper.toComplaint(complaintDto);
         complaint.setCreatedAt(LocalDateTime.now());
         complaint.setStatus(ComplaintStatus.PENDING);
+        complaint.setPriority(ComplaintPriority.MEDIUM); // Use setPriority instead of setAdminSetPriority
+        
+        // Set new fields
+        complaint.setSuspectInfo(complaintDto.getSuspectInfo());
+        complaint.setSuspectSocialMedia(complaintDto.getSuspectSocialMedia());
+        complaint.setSuspectPhoneNumber(complaintDto.getSuspectPhoneNumber());
         
         Department department = departmentRepository.findById(complaintDto.getDepartmentId())
             .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
@@ -93,9 +100,13 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public List<ComplaintDto> getUserComplaints(Long userId) {
-        return complaintRepository.findByUserId(userId).stream()
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            
+        List<Complaint> complaints = complaintRepository.findByUserId(userId);
+        return complaints.stream()
             .map(mapper::toComplaintDto)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -106,16 +117,18 @@ public class ComplaintServiceImpl implements ComplaintService {
 
     @Override
     public List<ComplaintDto> getComplaintsByDepartment(Long departmentId) {
-        return complaintRepository.findByDepartmentId(departmentId).stream()
+        List<Complaint> complaints = complaintRepository.findByDepartmentId(departmentId);
+        return complaints.stream()
             .map(mapper::toComplaintDto)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     @Override
     public List<ComplaintDto> getAllComplaints() {
-        return complaintRepository.findAll().stream()
+        List<Complaint> complaints = complaintRepository.findAll();
+        return complaints.stream()
             .map(mapper::toComplaintDto)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     @Override

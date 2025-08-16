@@ -29,26 +29,27 @@ public class Complaint {
     private LocalDateTime incidentDate;
     private LocalDateTime createdAt;
     private LocalDateTime resolvedDate;
-    private LocalDateTime feedbackDate;
     
     @Enumerated(EnumType.STRING)
-    private ComplaintStatus status;
-    
-    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
     private ComplaintPriority priority;
     
-    private Integer rating;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private ComplaintStatus status;
     
-    @Column(columnDefinition = "TEXT")
+    private String suspectInfo;
+    private String suspectSocialMedia;
+    private String suspectPhoneNumber;
+    private Integer rating;
     private String feedback;
+    
+    @Column(name = "feedback_date")
+    private LocalDateTime feedbackDate;
     
     @Column(columnDefinition = "TEXT")
     private String resolutionNotes;
     
     @OneToMany(mappedBy = "complaint", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Evidence> evidences;
-
-    public enum ComplaintPriority {
-        LOW, MEDIUM, HIGH, CRITICAL
-    }
 }

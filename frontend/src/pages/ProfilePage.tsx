@@ -1,73 +1,49 @@
-import { useQuery } from "@tanstack/react-query"
+import { useAuth } from '@/hooks/useAuth';
 import { Layout } from "@/components/layout/Layout"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
-import { users } from "@/services/api"
 import { toast } from "sonner"
 
-interface UserProfile {
-  id: number;
-  name: string;
-  email: string;
-  nidNumber: string;
-  role: string;
-  approved: boolean;
-  departmentId?: number;
-}
-
 export function ProfilePage() {
+  const { user } = useAuth();
   const navigate = useNavigate()
-  const { data: profile, isLoading } = useQuery<UserProfile>({
-    queryKey: ['profile'],
-    queryFn: users.getProfile
-  })
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="text-center">Loading profile...</div>
-      </Layout>
-    )
+  if (!user) {
+    return null;
   }
 
   return (
     <Layout>
       <div className="max-w-3xl mx-auto">
         <Card>
-          <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="p-6 max-w-2xl">
+            <h1 className="text-2xl font-bold mb-6">Profile</h1>
+            <dl className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Name</label>
-                <p className="text-lg">{profile?.name}</p>
+                <dt className="text-sm font-medium text-gray-500">Name</dt>
+                <dd className="mt-1 text-sm text-gray-900">{user.name}</dd>
               </div>
               <div>
-                <label className="text-sm font-medium">Email</label>
-                <p className="text-lg">{profile?.email}</p>
+                <dt className="text-sm font-medium text-gray-500">Email</dt>
+                <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
               </div>
               <div>
-                <label className="text-sm font-medium">NID Number</label>
-                <p className="text-lg">{profile?.nidNumber}</p>
+                <dt className="text-sm font-medium text-gray-500">NID Number</dt>
+                <dd className="mt-1 text-sm text-gray-900">{user.nidNumber}</dd>
               </div>
               <div>
-                <label className="text-sm font-medium">Role</label>
-                <p className="text-lg capitalize">{profile?.role?.toLowerCase()}</p>
+                <dt className="text-sm font-medium text-gray-500">Role</dt>
+                <dd className="mt-1 text-sm text-gray-900">{user.role}</dd>
               </div>
               <div>
-                <label className="text-sm font-medium">Status</label>
-                <p className="text-lg">{profile?.approved ? 'Approved' : 'Pending Approval'}</p>
+                <dt className="text-sm font-medium text-gray-500">Status</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {user.approved ? 'Approved' : 'Pending Approval'}
+                </dd>
               </div>
-            </div>
-
-            <div className="flex justify-end space-x-4 mt-6">
-              <Button variant="outline" onClick={() => navigate(-1)}>
-                Back
-              </Button>
-            </div>
-          </CardContent>
+            </dl>
+          </div>
         </Card>
       </div>
     </Layout>

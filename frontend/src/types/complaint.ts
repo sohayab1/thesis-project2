@@ -7,17 +7,12 @@ export type ComplaintPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 export interface ComplaintCreateDto {
   title: string;
   description: string;
-  departmentId: string;
+  departmentId: string | number;
   location: string;
   incidentDate: string;
-  priority: ComplaintPriority;
-  reporterType: ReporterType;
-  suspect?: {
-    name: string;
-    contact: string;
-    address: string;
-    description: string;
-  };
+  suspectInfo?: string;
+  suspectSocialMedia?: string;
+  suspectPhoneNumber?: string;
 }
 
 export interface Department {
@@ -36,4 +31,36 @@ export interface Complaint extends Omit<ComplaintCreateDto, 'departmentId'> {
   department?: Department;
   evidences?: Evidence[];
   feedback?: Feedback;
+}
+
+export interface ComplaintDto {
+    id: number;
+    title: string;
+    description: string;
+    status: ComplaintStatus;
+    priority: ComplaintPriority;
+    location: string;
+    incidentDate: string;
+    createdAt: string;
+    updatedAt?: string;
+    suspectInfo?: string;
+    suspectSocialMedia?: string;
+    suspectPhoneNumber?: string;
+    rating?: number;
+    feedback?: string;
+    feedbackDate?: string;
+    evidences?: Array<{
+        id: number;
+        filePath: string;
+        fileType: string;
+    }>;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+    };
+    department?: {
+        id: number;
+        name: string;
+    };
 }

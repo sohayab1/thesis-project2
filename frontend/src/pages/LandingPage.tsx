@@ -1,119 +1,91 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { Footer } from '@/components/layout/Footer';
+import { NewsSection } from '@/components/layout/NewsSection';
+import { Layout } from '@/components/layout/Layout';
 
 export function LandingPage() {
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
-      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="font-bold text-xl">CyberCrime Reporting</div>
-          <div className="flex gap-4">
-            <Button variant="ghost" onClick={() => navigate('/login')}>
-              Login
-            </Button>
-            <Button onClick={() => navigate('/register')}>Get Started</Button>
-          </div>
-        </div>
-      </nav>
-
-      <main>
+    <Layout>
+      <div className="min-h-screen flex flex-col">
         {/* Hero Section */}
-        <section className="container py-24 space-y-8 md:space-y-12">
-          <div className="max-w-[64rem] space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              Report Cybercrimes
-              <br />
-              <span className="text-primary">Safely & Securely</span>
+        <section className="flex-grow bg-primary text-white py-20">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-5xl font-bold mb-6">
+              Report Cybercrime Incidents
             </h1>
-            <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-              A secure platform to report cyber crimes and track their resolution. We ensure your privacy and safety throughout the process.
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Help us make the digital world safer for everyone. Report cybercrime
+              incidents and contribute to a secure online environment.
             </p>
-            <div className="flex flex-col gap-4 min-[400px]:flex-row">
-              <Button size="lg" onClick={() => navigate('/register')}>
-                Report a Crime
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/about')}>
-                Learn More
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="container py-20 space-y-16">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
-          <div className="grid gap-8 md:grid-cols-3">
-            {features.map((feature, i) => (
-              <div key={i} className="relative p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
-                <div className="mb-4 text-primary">{feature.icon}</div>
-                <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+            {!isAuthenticated ? (
+              <div className="space-x-4">
+                <Button
+                  onClick={() => navigate('/login')}
+                  variant="secondary"
+                  size="lg"
+                >
+                  Login
+                </Button>
+                <Button
+                  onClick={() => navigate('/register')}
+                  variant="outline"
+                  size="lg"
+                >
+                  Register
+                </Button>
               </div>
-            ))}
+            ) : (
+              <Button
+                onClick={() => navigate('/dashboard')}
+                variant="secondary"
+                size="lg"
+              >
+                Go to Dashboard
+              </Button>
+            )}
           </div>
         </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t bg-muted/50">
-        <div className="container py-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          <div className="space-y-4">
-            <h3 className="font-bold">CyberCrime Reporting</h3>
-            <p className="text-sm text-muted-foreground">
-              Making our digital space safer, one report at a time.
-            </p>
-          </div>
-          {footerLinks.map((section, i) => (
-            <div key={i} className="space-y-4">
-              <h4 className="font-semibold">{section.title}</h4>
-              <ul className="space-y-2">
-                {section.links.map((link, j) => (
-                  <li key={j}>
-                    <Button variant="link" className="h-auto p-0">
-                      {link}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
+        {/* News Section */}
+        <NewsSection />
+
+        {/* Features Section */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Why Report With Us?
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold mb-4">Quick Response</h3>
+                <p className="text-gray-600">
+                  Get immediate attention to your reported incidents
+                </p>
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl font-semibold mb-4">Expert Support</h3>
+                <p className="text-gray-600">
+                  Our team of cybersecurity experts is here to help
+                </p>
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl font-semibold mb-4">Secure Platform</h3>
+                <p className="text-gray-600">
+                  Your information is protected with advanced security measures
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
-      </footer>
-    </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </Layout>
   );
 }
-
-const features = [
-  {
-    icon: "🔒",
-    title: "Secure Reporting",
-    description: "Submit reports securely with end-to-end encryption and anonymous reporting options.",
-  },
-  {
-    icon: "📱",
-    title: "Real-time Updates",
-    description: "Track your case progress and receive instant updates on developments.",
-  },
-  {
-    icon: "👥",
-    title: "Expert Support",
-    description: "Get assistance from cybercrime experts and law enforcement professionals.",
-  },
-];
-
-const footerLinks = [
-  {
-    title: "Product",
-    links: ["Features", "Security", "How it works", "Pricing"],
-  },
-  {
-    title: "Resources",
-    links: ["Blog", "Documentation", "Help Center", "Contact"],
-  },
-  {
-    title: "Legal",
-    links: ["Privacy", "Terms", "Cookie Policy"],
-  },
-];

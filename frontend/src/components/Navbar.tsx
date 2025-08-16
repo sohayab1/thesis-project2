@@ -1,41 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { getDashboardPath } from "@/utils/navigation";
+import { Link } from "react-router-dom";
 
 export function Navbar() {
-  const { user, logout, getDashboardPath } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { user, logout } = useAuth();
+  const dashboardPath = getDashboardPath(user?.role);
 
   return (
-    <nav className="border-b">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="font-bold text-xl">
-          Cybercrime Reporting
-        </Link>
-        <div className="flex items-center space-x-4">
-          {user ? (
-            <>
-              <Button
-                variant="ghost"
-                onClick={() => navigate(getDashboardPath())}
-                className={
-                  location.pathname === getDashboardPath() ? "active" : ""
-                }
+    <nav className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to={dashboardPath} className="text-xl font-semibold">
+              Dashboard
+            </Link>
+          </div>
+
+          {user && (
+            <div className="flex items-center space-x-4">
+              <Link
+                to={`${dashboardPath}/profile`}
+                className="text-gray-600 hover:text-gray-900"
               >
-                Dashboard
-              </Button>
-              <Link to="/profile">
-                <Button variant="ghost">Profile</Button>
+                Profile
               </Link>
               <Button variant="ghost" onClick={logout}>
                 Logout
               </Button>
-            </>
-          ) : (
-            <Link to="/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
+            </div>
           )}
         </div>
       </div>

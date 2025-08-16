@@ -1,6 +1,9 @@
 package com.cybercrime.service;
 
 import com.cybercrime.dto.*;
+import com.cybercrime.model.ComplaintPriority;
+import com.cybercrime.model.ComplaintStatus;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,4 +20,6 @@ public interface AdminService {
     Map<String, Object> getComplaintStatistics();
     ComplaintDto resolveComplaint(Long complaintId);
     ComplaintDto assignDepartment(Long complaintId, Long departmentId);
+    ComplaintDto updateComplaintStatus(Long complaintId, ComplaintStatus status);
+    ComplaintDto updateComplaintPriority(Long complaintId, ComplaintPriority priority);
 }

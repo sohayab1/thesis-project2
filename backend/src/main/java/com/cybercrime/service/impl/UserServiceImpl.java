@@ -9,6 +9,7 @@ import com.cybercrime.dto.UserUpdateDto;
 import com.cybercrime.mapper.EntityMapperService;
 import com.cybercrime.repository.UserRepository;
 import com.cybercrime.repository.DepartmentRepository;
+import com.cybercrime.service.EmailService;
 import com.cybercrime.service.FileStorageService;
 import com.cybercrime.service.UserService;
 import com.cybercrime.exception.ResourceNotFoundException;
@@ -16,22 +17,61 @@ import com.cybercrime.exception.DuplicateResourceException;
 import com.cybercrime.exception.UnauthorizedException;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
+@Slf4j  // Add this annotation
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final EntityMapperService mapper;
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;  // Add this field
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public User update(User user) {
+        return userRepository.save(user);
+    }
 
     @Override
     @Transactional
@@ -113,10 +153,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto approveUser(Long userId) {
-        User user = findUserById(userId);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+            
         user.setApproved(true);
         user.setUpdatedAt(LocalDateTime.now());
-        return mapper.toUserDto(userRepository.save(user));
+        
+        User savedUser = userRepository.save(user);
+        
+        // Send email notification
+        try {
+            emailService.sendApprovalEmail(savedUser);
+        } catch (Exception e) {
+            log.error("Failed to send approval email", e);
+            // Don't fail the transaction if email fails
+        }
+        
+        return mapper.toUserDto(savedUser);
     }
 
     @Override

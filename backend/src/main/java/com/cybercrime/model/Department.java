@@ -1,23 +1,20 @@
 package com.cybercrime.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "departments")
-public class Department {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, unique = true)
+public class Department extends BaseEntity {
     private String name;
-
     private String description;
+    private boolean active;
 
     /**
      * Users that belong to this department.
@@ -33,6 +30,4 @@ public class Department {
      */
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<com.cybercrime.model.Complaint> complaints = new ArrayList<>();
-
-    private boolean active = true;
 }

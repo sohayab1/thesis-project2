@@ -1,7 +1,7 @@
 package com.cybercrime.model;
 
 public enum UserRole {
-    ADMIN,
     USER,
+    ADMIN,
     DEPARTMENT_ADMIN
 }

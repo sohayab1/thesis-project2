@@ -5,6 +5,7 @@ import com.cybercrime.dto.DepartmentDto;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.exception.ResourceNotFoundException;
 import com.cybercrime.model.Complaint;
+import com.cybercrime.model.ComplaintPriority;
 import com.cybercrime.model.ComplaintStatus;
 import com.cybercrime.model.Department;
 import com.cybercrime.model.User;
@@ -27,8 +28,6 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-@Slf4j
 public class AdminServiceImpl implements AdminService {
     private final ComplaintRepository complaintRepository;
     private final UserRepository userRepository;
@@ -101,35 +100,27 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ComplaintDto> getAllComplaints() {
-        try {
-            List<Complaint> complaints = complaintRepository.findAllWithUserAndDepartment();
-            return complaints.stream()
-                .map(complaint -> {
-                    ComplaintDto dto = new ComplaintDto();
-                    dto.setId(complaint.getId());
-                    dto.setTitle(complaint.getTitle());
-                    dto.setDescription(complaint.getDescription());
-                    dto.setStatus(complaint.getStatus() != null ? complaint.getStatus().name() : "PENDING");
-                    dto.setCreatedAt(complaint.getCreatedAt());
-                    // Handle null priority safely
-                    dto.setPriority(complaint.getPriority() != null ? 
-                        complaint.getPriority().name() : "MEDIUM");
-                    
-                    if (complaint.getUser() != null) {
-                        dto.setUser(mapper.toUserDto(complaint.getUser()));
-                    }
-                    
-                    if (complaint.getDepartment() != null) {
-                        dto.setDepartment(mapper.toDepartmentDto(complaint.getDepartment()));
-                    }
-                    
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error fetching complaints: ", e);
-            throw new RuntimeException("Failed to fetch complaints", e);
-        }
+        List<Complaint> complaints = complaintRepository.findAll();
+        return complaints.stream()
+            .map(complaint -> {
+                ComplaintDto dto = new ComplaintDto();
+                dto.setId(complaint.getId());
+                dto.setTitle(complaint.getTitle());
+                dto.setDescription(complaint.getDescription());
+                dto.setStatus(complaint.getStatus()); // Now passing enum directly
+                dto.setPriority(complaint.getPriority()); // Now passing enum directly
+                
+                if (complaint.getUser() != null) {
+                    dto.setUser(mapper.toUserDto(complaint.getUser()));
+                }
+                
+                if (complaint.getDepartment() != null) {
+                    dto.setDepartment(mapper.toDepartmentDto(complaint.getDepartment()));
+                }
+                
+                return dto;
+            })
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -158,6 +149,22 @@ public class AdminServiceImpl implements AdminService {
         Department department = departmentRepository.findById(departmentId)
             .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
         complaint.setDepartment(department);
+        return mapper.toComplaintDto(complaintRepository.save(complaint));
+    }
+
+    @Override
+    public ComplaintDto updateComplaintStatus(Long complaintId, ComplaintStatus status) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+            .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+        complaint.setStatus(status);
+        return mapper.toComplaintDto(complaintRepository.save(complaint));
+    }
+
+    @Override
+    public ComplaintDto updateComplaintPriority(Long complaintId, ComplaintPriority priority) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+            .orElseThrow(() -> new ResourceNotFoundException("Complaint not found"));
+        complaint.setPriority(priority);
         return mapper.toComplaintDto(complaintRepository.save(complaint));
     }
 }

@@ -8,13 +8,10 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    nidNumber: string;
     role: UserRole;
     approved: boolean;
-    nidFrontPath?: string | null;
-    nidBackPath?: string | null;
-    selfieFrontPath?: string | null;
-    selfieLeftPath?: string | null;
+    nidNumber: string;
+    department?: Department;
     departmentId?: number;
 }
 
@@ -38,7 +35,8 @@ export interface Feedback {
 export interface Department {
     id: number;
     name: string;
-    description?: string;
+    description: string;
+    active: boolean;
 }
 
 export interface Complaint {

@@ -9,15 +9,19 @@ import com.cybercrime.service.EmailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")  // Remove the /api prefix
+// Remove /api since it's already in context-path
+@RequestMapping("/admin")  // Changed from "/api/admin"
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
@@ -28,16 +32,20 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
 
-    @GetMapping("/pending-users")
+    @GetMapping("/users/pending")
     public ResponseEntity<List<UserDto>> getPendingUsers() {
         return ResponseEntity.ok(adminService.getPendingUsers());
     }
 
     @PutMapping("/users/{userId}/approve")
     public ResponseEntity<UserDto> approveUser(@PathVariable Long userId) {
-        UserDto user = adminService.approveUser(userId);
-        emailService.sendApprovalEmail(user.getEmail(), user.getName(), true);
-        return ResponseEntity.ok(user);
+        try {
+            UserDto approvedUser = adminService.approveUser(userId);
+            emailService.sendApprovalEmail(approvedUser.getEmail(), approvedUser.getName(), true);
+            return ResponseEntity.ok(approvedUser);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to approve user: " + e.getMessage());
+        }
     }
 
     @PutMapping("/users/{userId}/reject")
@@ -57,7 +65,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getUsersByDepartment(departmentId));
     }
 
-    @GetMapping("/complaints")
+    @GetMapping("/complaints/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ComplaintDto>> getAllComplaints() {
         return ResponseEntity.ok(adminService.getAllComplaints());
