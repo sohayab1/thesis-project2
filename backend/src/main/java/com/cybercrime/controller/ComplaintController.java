@@ -10,6 +10,7 @@ import com.cybercrime.service.SecurityService; // Update this import
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/complaints")
 @RequiredArgsConstructor
+@Slf4j  // Add this annotation
+
 public class ComplaintController {
     private final ComplaintService complaintService;
     private final SecurityService securityService; // Update this field
@@ -93,7 +96,7 @@ public class ComplaintController {
         User user = userDetails.getUser();
         if (user.getDepartment() == null || !user.getDepartment().getId().equals(departmentId)) {
             log.warn("Unauthorized access attempt. User department: {}, Requested department: {}", 
-                user.getDepartment()?.getId(), departmentId);
+                user.getDepartment() != null ? user.getDepartment().getId() : null, departmentId);
             throw new UnauthorizedException("You can only view complaints from your department");
         }
         

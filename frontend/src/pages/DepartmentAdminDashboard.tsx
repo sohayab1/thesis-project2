@@ -14,27 +14,21 @@ export function DepartmentAdminDashboard() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  
-  console.log("Current user:", user); // Debug log
-  
-  const departmentUser = user as User & { department: { id: number, name: string } };
-  
-  console.log("Department user:", departmentUser); // Debug log
-  console.log("Department ID:", departmentUser?.department?.id); // Debug log
+
+  console.log("Current user:", user);
+
+  // Fix: Access departmentId directly from user object
+  const departmentId = user?.departmentId;
+  console.log("Department ID:", departmentId);
 
   const { data: departmentComplaints = [], isLoading, error } = useQuery<ComplaintDto[]>({
-    queryKey: ['departmentComplaints', departmentUser?.department?.id],
-    queryFn: async () => {
-      console.log("Fetching complaints for department:", departmentUser.department.id); // Debug log
-      const complaints = await complaints.getDepartmentComplaints(departmentUser.department.id);
-      console.log("Fetched complaints:", complaints); // Debug log
-      return complaints;
-    },
-    enabled: !!departmentUser?.department?.id,
+    queryKey: ['departmentComplaints', departmentId],
+    queryFn: () => complaints.getDepartmentComplaints(departmentId!),
+    enabled: !!departmentId, // Only run query when departmentId exists
     retry: 1
   });
 
-  console.log("Query state:", { isLoading, error, data: departmentComplaints }); // Debug log
+  console.log("Query state:", { isLoading, error, data: departmentComplaints });
 
   const handleComplaintResolve = async (complaintId: number) => {
     try {
@@ -42,7 +36,7 @@ export function DepartmentAdminDashboard() {
       await complaints.markAsResolved(complaintId);
       toast.success('Complaint resolved successfully');
       await queryClient.invalidateQueries({ 
-        queryKey: ['departmentComplaints', departmentUser?.department?.id] 
+        queryKey: ['departmentComplaints', departmentId] 
       });
     } catch (error) {
       toast.error('Failed to resolve complaint');
@@ -78,7 +72,7 @@ export function DepartmentAdminDashboard() {
     <Layout>
       <div className="container mx-auto py-6">
         <h1 className="text-2xl font-bold mb-6">
-          {departmentUser.department?.name} Department Dashboard
+          {user?.name}'s Department Dashboard
         </h1>
 
         <div className="grid gap-4">
