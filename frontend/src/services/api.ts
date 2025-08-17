@@ -164,12 +164,19 @@ export const complaints = {
       throw error;
     }
   },
-  getDepartmentComplaints: async (): Promise<ComplaintDto[]> => {
+  getDepartmentComplaints: async (departmentId: number): Promise<ComplaintDto[]> => {
     try {
-      const response = await api.get('/complaints/department');
+      console.log("Making API call for department:", departmentId); // Debug log
+      const response = await api.get(`/complaints/department/${departmentId}`);
+      console.log("API Response:", response.data); // Debug log
       return response.data;
     } catch (error) {
       console.error('Failed to fetch department complaints:', error);
+      console.log("Error details:", {  // Debug log
+        status: error.response?.status,
+        message: error.response?.data?.message,
+        error
+      });
       throw error;
     }
   },

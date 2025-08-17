@@ -81,17 +81,26 @@ public class ComplaintController {
         return ResponseEntity.ok(complaints);
     }
     
-    @GetMapping("/department")
+    @GetMapping("/department/{departmentId}")
     @PreAuthorize("hasRole('DEPARTMENT_ADMIN')")
     public ResponseEntity<List<ComplaintDto>> getDepartmentComplaints(
+        @PathVariable Long departmentId,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
+        log.debug("Received request for department complaints. Department ID: {}", departmentId);
+        log.debug("User details: {}", userDetails.getUser());
+        
         User user = userDetails.getUser();
-        if (user.getDepartment() == null) {
-            return ResponseEntity.ok(Collections.emptyList());
+        if (user.getDepartment() == null || !user.getDepartment().getId().equals(departmentId)) {
+            log.warn("Unauthorized access attempt. User department: {}, Requested department: {}", 
+                user.getDepartment()?.getId(), departmentId);
+            throw new UnauthorizedException("You can only view complaints from your department");
         }
-        // Use the department ID from the authenticated user
-        return ResponseEntity.ok(complaintService.getComplaintsByDepartment(user.getDepartment().getId()));
+        
+        List<ComplaintDto> complaints = complaintService.getComplaintsByDepartment(departmentId);
+        log.debug("Found {} complaints for department {}", complaints.size(), departmentId);
+        
+        return ResponseEntity.ok(complaints);
     }
 
     @PutMapping("/{id}/resolve")
