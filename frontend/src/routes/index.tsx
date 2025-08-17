@@ -18,47 +18,62 @@ export function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* User routes */}
-      <Route
-        path="/dashboard/*"
-        element={
-          <PrivateRoute roles={[UserRole.USER]}>
-            <Routes>
-              <Route index element={<DashboardPage />} />
-              <Route path="new-complaint" element={<NewComplaintPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-            </Routes>
-          </PrivateRoute>
-        }
-      />
+      {/* Shared routes that all authenticated users can access */}
+      <Route path="/dashboard">
+        {/* Profile route accessible to all authenticated users */}
+        <Route
+          path="profile"
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+      </Route>
 
       {/* Admin routes */}
-      <Route
-        path="/admin/*"
-        element={
-          <PrivateRoute roles={[UserRole.ADMIN]}>
-            <Routes>
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<AdminDashboardPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-            </Routes>
-          </PrivateRoute>
-        }
-      />
+      <Route path="/admin">
+        <Route
+          path="dashboard"
+          element={
+            <PrivateRoute roles={[UserRole.ADMIN]}>
+              <AdminDashboardPage />
+            </PrivateRoute>
+          }
+        />
+      </Route>
 
       {/* Department Admin routes */}
-      <Route
-        path="/department/*"
-        element={
-          <PrivateRoute roles={[UserRole.DEPARTMENT_ADMIN]}>
-            <Routes>
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<DepartmentAdminDashboard />} />
-              <Route path="profile" element={<ProfilePage />} />
-            </Routes>
-          </PrivateRoute>
-        }
-      />
+      <Route path="/department">
+        <Route
+          path="dashboard"
+          element={
+            <PrivateRoute roles={[UserRole.DEPARTMENT_ADMIN]}>
+              <DepartmentAdminDashboard />
+            </PrivateRoute>
+          }
+        />
+      </Route>
+
+      {/* User routes */}
+      <Route path="/dashboard">
+        <Route
+          index
+          element={
+            <PrivateRoute roles={[UserRole.USER]}>
+              <DashboardPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="new-complaint"
+          element={
+            <PrivateRoute roles={[UserRole.USER]}>
+              <NewComplaintPage />
+            </PrivateRoute>
+          }
+        />
+      </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

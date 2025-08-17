@@ -16,14 +16,25 @@ export function PrivateRoute({ roles, children }: PrivateRouteProps) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Allow access to profile page for all authenticated users
-  if (location.pathname.includes('/profile')) {
+  // Profile page is accessible to all authenticated users
+  if (location.pathname === '/dashboard/profile') {
     return <>{children}</>;
   }
 
-  // For other routes, check role-based access
+  // For role-protected routes
   if (roles && !roles.includes(user?.role as UserRole)) {
-    return <Navigate to="/" replace />;
+    // Store the attempted URL
+    const returnTo = location.pathname;
+
+    // Redirect to their appropriate dashboard
+    switch (user?.role) {
+      case UserRole.ADMIN:
+        return <Navigate to="/admin/dashboard" replace />;
+      case UserRole.DEPARTMENT_ADMIN:
+        return <Navigate to="/department/dashboard" replace />;
+      default:
+        return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return <>{children}</>;
