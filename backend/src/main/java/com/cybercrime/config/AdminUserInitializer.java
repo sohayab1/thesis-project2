@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Order(1)
+@Order(3)
 public class AdminUserInitializer implements CommandLineRunner {
     private final UserService userService;
     private final UserRepository userRepository;

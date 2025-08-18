@@ -113,6 +113,13 @@ export function LoginForm({
         >
           Sign up
         </Button>
+        <Button 
+          variant="link" 
+          className="text-primary underline-offset-4 hover:underline"
+          onClick={() => navigate('/')}
+        >
+          Back
+        </Button>
       </div>
     </div>
   )

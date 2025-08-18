@@ -16,11 +16,12 @@ export function LandingPage() {
         <section className="flex-grow bg-primary text-white py-20">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-5xl font-bold mb-6">
-              Report Cybercrime Incidents
+              সাইবার সুরক্ষা বাংলাদেশ
             </h1>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Help us make the digital world safer for everyone. Report cybercrime
-              incidents and contribute to a secure online environment.
+              
+              "ডিজিটাল বিশ্বকে সকলের জন্য নিরাপদ করতে আমাদের সাহায্য করুন। সাইবার অপরাধের ঘটনা রিপোর্ট করুন এবং একটি নিরাপদ অনলাইন পরিবেশ তৈরিতে অবদান রাখুন।"
+
             </p>
             {!isAuthenticated ? (
               <div className="space-x-4">
@@ -33,7 +34,7 @@ export function LandingPage() {
                 </Button>
                 <Button
                   onClick={() => navigate('/register')}
-                  variant="outline"
+                  variant="secondary"
                   size="lg"
                 >
                   Register

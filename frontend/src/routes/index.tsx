@@ -10,6 +10,11 @@ import { LandingPage } from '@/pages/LandingPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
 
+import { NewsPage } from '@/pages/NewsPage';
+import { AboutPage } from '@/pages/AboutPage';
+import { ContactPage } from '@/pages/ContactPage';
+import { FaqPage } from '@/pages/FaqPage';
+
 export function AppRoutes() {
   return (
     <Routes>
@@ -17,6 +22,10 @@ export function AppRoutes() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/news" element={<NewsPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/faq" element={<FaqPage />} />
 
       {/* Shared routes that all authenticated users can access */}
       <Route path="/dashboard">
@@ -74,6 +83,7 @@ export function AppRoutes() {
           }
         />
       </Route>
+      
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
