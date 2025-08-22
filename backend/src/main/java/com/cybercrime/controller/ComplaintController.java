@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/complaints")
 @RequiredArgsConstructor
+@Slf4j
 public class ComplaintController {
     private final ComplaintService complaintService;
     private final SecurityService securityService; // Update this field
@@ -96,7 +97,7 @@ public class ComplaintController {
         
         if (user.getDepartment() == null || !departmentId.equals(userDepartmentId)) {
             log.warn("Unauthorized access attempt. User department: {}, Requested department: {}", 
-                user.getDepartment()?.getId(), departmentId);
+                userDepartmentId, departmentId);
             throw new UnauthorizedException("You can only view complaints from your department");
         }
         
