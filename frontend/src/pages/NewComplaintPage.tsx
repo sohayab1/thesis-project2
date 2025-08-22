@@ -96,10 +96,11 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
 
   return (
     <Layout>
-      <div className="max-w-2xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold">
-          {isEditing ? "Edit Complaint" : "File a New Complaint"}
+      <div className="container mx-auto py-6">
+        <h1 className="text-2xl font-bold mb-6">
+          {isEditing ? "Edit Complaint" : "File New Complaint"}
         </h1>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium">Title *</label>

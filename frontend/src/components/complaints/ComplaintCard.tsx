@@ -14,12 +14,13 @@ import { ComplaintDto } from "@/types/dto";
 import { toast } from "sonner";
 import { feedback } from "@/services/api";
 import { ComplaintStatus } from "@/types/complaint";
+import { StatusTracker } from "@/components/complaints/StatusTracker";
 
 interface ComplaintCardProps {
   complaint: ComplaintDto;
   onFeedback?: () => void | Promise<void>;
-  onResolve?: () => Promise<void>;
-  showResolveButton?: boolean;
+  onStatusChange?: (status: ComplaintStatus) => Promise<void>;
+  showStatusButtons?: boolean;
   showEditButton?: boolean;
   onEdit?: () => void;
 }
@@ -27,8 +28,8 @@ interface ComplaintCardProps {
 export function ComplaintCard({
   complaint,
   onFeedback,
-  onResolve,
-  showResolveButton,
+  onStatusChange,
+  showStatusButtons,
   showEditButton,
   onEdit,
 }: ComplaintCardProps) {
@@ -41,7 +42,7 @@ export function ComplaintCard({
       toast.success("Feedback submitted successfully");
       setShowFeedback(false); // Close the form on success
       setFeedbackError(null);
-      onResolve(); // Refresh the complaints list
+      onStatusChange?.(complaint.status); // Refresh the complaints list
     } catch (error: any) {
       if (error.message.includes('already exists')) {
         toast.error("Feedback already exists for this complaint");
@@ -66,6 +67,39 @@ export function ComplaintCard({
 
   const canGiveFeedback = complaint.status === "RESOLVED" && !complaint.feedback;
 
+  const getNextStatus = (currentStatus: ComplaintStatus) => {
+    switch (currentStatus) {
+      case ComplaintStatus.SUBMITTED:
+        return ComplaintStatus.APPROVAL_PENDING;
+      case ComplaintStatus.APPROVAL_PENDING:
+        return ComplaintStatus.ENQUIRY_ONGOING;
+      case ComplaintStatus.ENQUIRY_ONGOING:
+        return ComplaintStatus.RESOLVED;
+      default:
+        return null;
+    }
+  };
+
+  const getStatusButton = () => {
+    const nextStatus = getNextStatus(complaint.status as ComplaintStatus);
+    if (!nextStatus) return null;
+
+    const labels = {
+      [ComplaintStatus.APPROVAL_PENDING]: "Approve",
+      [ComplaintStatus.ENQUIRY_ONGOING]: "Start Investigation",
+      [ComplaintStatus.RESOLVED]: "Mark as Resolved",
+    };
+
+    return (
+      <Button 
+        onClick={() => onStatusChange?.(nextStatus)}
+        variant="secondary"
+      >
+        {labels[nextStatus]}
+      </Button>
+    );
+  };
+
   return (
     <>
       <Card>
@@ -77,18 +111,17 @@ export function ComplaintCard({
                 Filed by: {complaint.user?.name || "Unknown"}
               </p>
             </div>
-            <div className="flex flex-col items-end space-y-2">
-              <Badge className={getStatusColor(complaint.status)}>
-                {complaint.status}
-              </Badge>
-              {showResolveButton && complaint.status !== "RESOLVED" && (
-                <Button size="sm" onClick={onResolve}>
-                  Mark as Resolved
-                </Button>
-              )}
-            </div>
+            <Badge className={getStatusColor(complaint.status)}>
+              {complaint.status}
+            </Badge>
           </div>
         </CardHeader>
+
+        {/* Add Status Tracker here */}
+        <div className="px-6 py-2">
+          <StatusTracker currentStatus={complaint.status} />
+        </div>
+
         <CardContent>
           <div className="space-y-4">
             {complaint.user && (
@@ -141,15 +174,24 @@ export function ComplaintCard({
             )}
           </div>
         </CardContent>
+        
         <CardFooter className="flex justify-between">
+          {showStatusButtons && (
+            <div className="flex gap-2">
+              {getStatusButton()}
+              {complaint.status === ComplaintStatus.ENQUIRY_ONGOING && (
+                <Button
+                  onClick={() => onStatusChange?.(ComplaintStatus.UNRESOLVED)}
+                  variant="destructive"
+                >
+                  Mark Unresolved
+                </Button>
+              )}
+            </div>
+          )}
           {showEditButton && (
             <Button variant="outline" onClick={onEdit}>
               Edit
-            </Button>
-          )}
-          {showResolveButton && (
-            <Button onClick={onResolve}>
-              Resolve
             </Button>
           )}
         </CardFooter>

@@ -56,3 +56,11 @@ export interface ComplaintCreateDto {
     suspectSocialMedia?: string;
     suspectPhoneNumber?: string;
 }
+
+export enum ComplaintStatus {
+  SUBMITTED = "SUBMITTED",
+  APPROVAL_PENDING = "APPROVAL_PENDING",
+  ENQUIRY_ONGOING = "ENQUIRY_ONGOING",
+  RESOLVED = "RESOLVED",
+  UNRESOLVED = "UNRESOLVED"
+}

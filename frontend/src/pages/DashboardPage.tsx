@@ -49,6 +49,7 @@ export function DashboardPage() {
   };
 
   const handleEditComplaint = (complaintId: number) => {
+    // Update the navigation path to match the route we defined
     navigate(`/dashboard/edit-complaint/${complaintId}`);
   };
 

@@ -9,6 +9,13 @@ export function LandingPage() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  // Video IDs from the YouTube URLs
+  const videos = [
+    { id: 'lY9SgJGr5_g', title: 'Cyber Crime Prevention Video 1' },
+    { id: 'ktLslyiM7G4', title: 'Cyber Crime Prevention Video 2' },
+    { id: 'mFWXoE_ZUMg', title: 'Cyber Crime Prevention Video 3' },
+  ];
+
   return (
     <Layout>
       <div className="min-h-screen flex flex-col">
@@ -52,11 +59,30 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* News Section */}
-        <NewsSection />
+        {/* Featured Videos Section */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Be aware of cyber crimes and help us to prevent them
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {videos.map((video) => (
+                <div key={video.id} className="aspect-video">
+                  <iframe
+                    className="w-full h-full rounded-lg shadow-lg"
+                    src={`https://www.youtube.com/embed/${video.id}`}
+                    title={video.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* Features Section */}
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
               Why Report With Us?
@@ -83,6 +109,9 @@ export function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* News Section */}
+        <NewsSection />
 
         {/* Footer */}
         <Footer />

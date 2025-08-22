@@ -206,6 +206,15 @@ export const complaints = {
     const response = await api.get(`/complaints/${id}`);
     return response.data;
   },
+  updateStatus: async (complaintId: number, data: { status: ComplaintStatus }): Promise<ComplaintDto> => {
+    try {
+      const response = await api.put(`/complaints/${complaintId}/status`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update complaint status:', error);
+      throw error;
+    }
+  },
 };
 
 export const users = {

@@ -92,6 +92,11 @@ public class ComplaintServiceImpl implements ComplaintService {
         validateStatusTransition(complaint.getStatus(), statusUpdate.getStatus());
         complaint.setStatus(statusUpdate.getStatus());
         
+        if (statusUpdate.getStatus() == ComplaintStatus.RESOLVED || 
+            statusUpdate.getStatus() == ComplaintStatus.UNRESOLVED) {
+            complaint.setResolvedDate(LocalDateTime.now());
+        }
+        
         return entityMapper.toComplaintDto(complaintRepository.save(complaint));
     }
 
@@ -215,7 +220,6 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     private void validateStatusTransition(ComplaintStatus currentStatus, ComplaintStatus newStatus) {
-        // Define valid transitions
         Map<ComplaintStatus, Set<ComplaintStatus>> validTransitions = Map.of(
             ComplaintStatus.SUBMITTED, Set.of(ComplaintStatus.APPROVAL_PENDING),
             ComplaintStatus.APPROVAL_PENDING, Set.of(ComplaintStatus.ENQUIRY_ONGOING),

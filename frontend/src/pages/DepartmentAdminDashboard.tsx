@@ -45,6 +45,22 @@ export function DepartmentAdminDashboard() {
     }
   };
 
+  const handleStatusChange = async (complaintId: number, newStatus: ComplaintStatus) => {
+    try {
+      setLoading(true);
+      await complaints.updateStatus(complaintId, { status: newStatus });
+      toast.success(`Complaint status updated to ${newStatus}`);
+      await queryClient.invalidateQueries({ 
+        queryKey: ['departmentComplaints', departmentId] 
+      });
+    } catch (error) {
+      console.error('Failed to update complaint status:', error);
+      toast.error('Failed to update complaint status');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -89,8 +105,8 @@ export function DepartmentAdminDashboard() {
               <ComplaintCard
                 key={complaint.id}
                 complaint={complaint}
-                showResolveButton={true}
-                onResolve={() => handleComplaintResolve(complaint.id)}
+                showStatusButtons={true}
+                onStatusChange={(status) => handleStatusChange(complaint.id, status)}
               />
             ))
           )}

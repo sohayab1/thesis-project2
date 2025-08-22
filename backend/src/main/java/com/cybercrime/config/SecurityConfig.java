@@ -57,6 +57,7 @@ public class SecurityConfig {
                    .requestMatchers("/api/admin/complaints").hasRole("ADMIN")
                    .requestMatchers("/api/departments/{id}/complaints")
                     .hasAnyRole("ADMIN", "DEPARTMENT_ADMIN")
+                   .requestMatchers("/complaints/*/status").hasAnyRole("ADMIN", "DEPARTMENT_ADMIN")
                    .anyRequest().authenticated();
                 log.debug("Security paths configured with patterns: {}", String.join(", ", publicPaths));
             })

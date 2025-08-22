@@ -52,10 +52,18 @@ public class ComplaintController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEPARTMENT_ADMIN')")  // Add DEPARTMENT_ADMIN role
     public ResponseEntity<ComplaintDto> updateStatus(
             @PathVariable Long id,
-            @Valid @RequestBody ComplaintStatusUpdateDto statusUpdate) {
+            @Valid @RequestBody ComplaintStatusUpdateDto statusUpdate,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // Check if department admin has access to this complaint
+        if (userDetails.getUser().getRole() == UserRole.DEPARTMENT_ADMIN) {
+            ComplaintDto complaint = complaintService.getComplaint(id);
+            if (!complaint.getDepartment().getId().equals(userDetails.getUser().getDepartment().getId())) {
+                throw new UnauthorizedException("You can only update complaints from your department");
+            }
+        }
         return ResponseEntity.ok(complaintService.updateStatus(id, statusUpdate));
     }
 

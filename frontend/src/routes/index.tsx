@@ -9,6 +9,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { LandingPage } from '@/pages/LandingPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
+import { EditComplaintPage } from '@/pages/EditComplaintPage';
 
 import { NewsPage } from '@/pages/NewsPage';
 import { AboutPage } from '@/pages/AboutPage';
@@ -79,6 +80,14 @@ export function AppRoutes() {
           element={
             <PrivateRoute roles={[UserRole.USER]}>
               <NewComplaintPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="edit-complaint/:id"
+          element={
+            <PrivateRoute roles={[UserRole.USER]}>
+              <EditComplaintPage />
             </PrivateRoute>
           }
         />
