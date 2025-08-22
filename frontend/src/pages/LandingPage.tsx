@@ -72,6 +72,68 @@ const BlogCard = ({ date, title }) => (
   </div>
 );
 
+const Footer = () => (
+  <footer className="border-t border-slate-200 bg-white py-12">
+    <Container>
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+        <div className="col-span-2">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500" />
+            <span className="text-lg font-bold">Cybercrime BD</span>
+          </div>
+          <p className="mt-3 max-w-sm text-sm text-slate-600">
+            Making the internet safer for everyone through community-driven cybercrime reporting.
+          </p>
+          <div className="mt-4 flex gap-3 opacity-70">
+            {["in", "fb", "x", "ig"].map((s) => (
+              <div key={s} className="h-8 w-8 rounded-full bg-slate-200" />
+            ))}
+          </div>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold text-slate-900">Platform</h4>
+          <ul className="mt-3 space-y-2 text-sm text-slate-600">
+            <li><a href="/about">About</a></li>
+            <li><a href="/faq">FAQs</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/news">News</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold text-slate-900">Resources</h4>
+          <ul className="mt-3 space-y-2 text-sm text-slate-600">
+            <li><a href="/guidelines">Guidelines</a></li>
+            <li><a href="/help">Help Center</a></li>
+            <li><a href="/support">Support</a></li>
+            <li><a href="/statistics">Statistics</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold text-slate-900">Legal</h4>
+          <ul className="mt-3 space-y-2 text-sm text-slate-600">
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/cookies">Cookie Policy</a></li>
+            <li><a href="/disclaimer">Disclaimer</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-6 text-xs text-slate-500">
+        <p>© {new Date().getFullYear()} Cybercrime BD. All rights reserved.</p>
+        <div className="flex items-center gap-2">
+          <CustomButton variant="ghost" className="!px-3 !py-1 text-xs">
+            Accept cookies
+          </CustomButton>
+          <CustomButton variant="ghost" className="!px-3 !py-1 text-xs">
+            Reject
+          </CustomButton>
+        </div>
+      </div>
+    </Container>
+  </footer>
+);
+
 export function LandingPage() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -312,22 +374,7 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-12">
-        <Container>
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
-            <div className="col-span-2">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-indigo-500 to-sky-500" />
-                <span className="text-lg font-bold">Cybercrime BD</span>
-              </div>
-              <p className="mt-3 max-w-sm text-sm text-slate-600">
-                Making the internet safer for everyone through community-driven cybercrime reporting.
-              </p>
-            </div>
-            {/* Add your footer content here */}
-          </div>
-        </Container>
-      </footer>
+      <Footer />
     </div>
   );
 }

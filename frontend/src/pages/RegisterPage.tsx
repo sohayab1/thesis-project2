@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { auth } from "@/services/api"
 import { toast } from "sonner"
+import { GalleryVerticalEnd } from "lucide-react"
 
 interface UserData {
   name: string;
@@ -76,126 +77,159 @@ export function RegisterPage() {
 
   return (
     <Layout>
-      <div className="flex justify-center py-8">
-        <Card className="w-full max-w-2xl p-6">
-          <h1 className="text-2xl font-bold mb-6">Create Account</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Full Name</label>
-                <Input
-                  name="name"
-                  value={userData.name}
-                  onChange={(e) => setUserData(prev => ({
-                    ...prev,
-                    name: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Email</label>
-                <Input
-                  type="email"
-                  name="email"
-                  value={userData.email}
-                  onChange={(e) => setUserData(prev => ({
-                    ...prev,
-                    email: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Password</label>
-                <Input
-                  type="password"
-                  name="password"
-                  value={userData.password}
-                  onChange={(e) => setUserData(prev => ({
-                    ...prev,
-                    password: e.target.value
-                  }))}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">NID Number</label>
-                <Input
-                  name="nidNumber"
-                  value={userData.nidNumber}
-                  onChange={(e) => setUserData(prev => ({
-                    ...prev,
-                    nidNumber: e.target.value
-                  }))}
-                  required
-                />
-              </div>
+      <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+        {/* Left side - Hero section */}
+        <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
+          <div className="absolute inset-0 bg-zinc-900" />
+          <div className="relative z-20 flex items-center text-lg font-medium">
+            <GalleryVerticalEnd className="mr-2 h-6 w-6" />
+            CyberCrime Reporting
+          </div>
+          <div className="relative z-20 mt-auto">
+            <blockquote className="space-y-2">
+              <p className="text-lg">
+                "Join our community in making the digital world safer. Your registration helps us combat cybercrime more effectively."
+              </p>
+              <footer className="text-sm">Cybercrime Prevention Unit</footer>
+            </blockquote>
+          </div>
+        </div>
+
+        {/* Right side - Registration form */}
+        <div className="lg:p-8">
+          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[450px]">
+            <div className="flex flex-col space-y-2 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">Create an Account</h1>
+              <p className="text-sm text-muted-foreground">
+                Enter your details to register for a new account
+              </p>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">NID Front</label>
-                <Input
-                  type="file"
-                  name="nidFront"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">NID Back</label>
-                <Input
-                  type="file"
-                  name="nidBack"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Selfie Front</label>
-                <Input
-                  type="file"
-                  name="selfieFront"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Selfie Left</label>
-                <Input
-                  type="file"
-                  name="selfieLeft"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Selfie Right</label>
-                <Input
-                  type="file"
-                  name="selfieRight"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  required
-                />
-              </div>
-            </div>
+            <div className="grid gap-6">
+              <form onSubmit={handleSubmit}>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">Full Name</label>
+                    <Input
+                      name="name"
+                      value={userData.name}
+                      onChange={(e) => setUserData(prev => ({
+                        ...prev,
+                        name: e.target.value
+                      }))}
+                      required
+                    />
+                  </div>
 
-            <div className="flex gap-4">
-              <Button type="submit" disabled={loading}>
-                {loading ? "Creating Account..." : "Create Account"}
-              </Button>
-              <Button type="button" variant="outline" onClick={() => navigate('/login')}>
-                Already have an account?
-              </Button>
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">Email</label>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={userData.email}
+                      onChange={(e) => setUserData(prev => ({
+                        ...prev,
+                        email: e.target.value
+                      }))}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">Password</label>
+                    <Input
+                      type="password"
+                      name="password"
+                      value={userData.password}
+                      onChange={(e) => setUserData(prev => ({
+                        ...prev,
+                        password: e.target.value
+                      }))}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">NID Number</label>
+                    <Input
+                      name="nidNumber"
+                      value={userData.nidNumber}
+                      onChange={(e) => setUserData(prev => ({
+                        ...prev,
+                        nidNumber: e.target.value
+                      }))}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">NID Front</label>
+                    <Input
+                      type="file"
+                      name="nidFront"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">NID Back</label>
+                    <Input
+                      type="file"
+                      name="nidBack"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">Selfie Front</label>
+                    <Input
+                      type="file"
+                      name="selfieFront"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">Selfie Left</label>
+                    <Input
+                      type="file"
+                      name="selfieLeft"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium leading-none">Selfie Right</label>
+                    <Input
+                      type="file"
+                      name="selfieRight"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3">
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Creating Account..." : "Create Account"}
+                  </Button>
+                  <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/login')}>
+                    Already have an account?
+                  </Button>
+                </div>
+              </form>
             </div>
-          </form>
-        </Card>
+          </div>
+        </div>
       </div>
     </Layout>
   )
