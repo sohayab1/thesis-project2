@@ -127,9 +127,9 @@ public class AdminServiceImpl implements AdminService {
     public Map<String, Object> getComplaintStatistics() {
         Map<String, Object> stats = new HashMap<>();
         stats.put("total", complaintRepository.count());
-        stats.put("pending", complaintRepository.countByStatus(ComplaintStatus.PENDING));
-        stats.put("inProgress", complaintRepository.countByStatus(ComplaintStatus.IN_PROGRESS));
-        stats.put("resolved", complaintRepository.countByStatus(ComplaintStatus.RESOLVED));
+        stats.put("submitted", complaintRepository.countByStatus(ComplaintStatus.SUBMITTED));
+        stats.put("approval_pending", complaintRepository.countByStatus(ComplaintStatus.APPROVAL_PENDING));
+        stats.put("enquiry_ongoing", complaintRepository.countByStatus(ComplaintStatus.ENQUIRY_ONGOING));
         return stats;
     }
 

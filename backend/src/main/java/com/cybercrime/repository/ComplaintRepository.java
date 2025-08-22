@@ -3,6 +3,7 @@ package com.cybercrime.repository;
 import com.cybercrime.model.Complaint;
 import com.cybercrime.model.ComplaintStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -41,4 +42,11 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     @Query("SELECT c FROM Complaint c LEFT JOIN FETCH c.user LEFT JOIN FETCH c.department")
     List<Complaint> findAllWithUserAndDepartment();
+
+    @Modifying
+    @Query("UPDATE Complaint c SET c.status = :newStatus WHERE c.status = :oldStatus")
+    void updateComplaintStatus(@Param("oldStatus") String oldStatus, @Param("newStatus") ComplaintStatus newStatus);
+
+    @Query("SELECT DISTINCT c.status FROM Complaint c")
+    List<String> findAllDistinctStatuses();
 }

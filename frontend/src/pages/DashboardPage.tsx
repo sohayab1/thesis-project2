@@ -48,6 +48,10 @@ export function DashboardPage() {
     }
   };
 
+  const handleEditComplaint = (complaintId: number) => {
+    navigate(`/dashboard/edit-complaint/${complaintId}`);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -98,7 +102,9 @@ export function DashboardPage() {
                 complaint={complaint}
                 onFeedback={() => navigate(`/feedback/${complaint.id}`)}
                 onResolve={() => handleComplaintResolve(complaint.id)}
-                showResolveButton={true} // Add this prop
+                onEdit={() => handleEditComplaint(complaint.id)}
+                showResolveButton={true}
+                showEditButton={!["RESOLVED", "UNRESOLVED"].includes(complaint.status)}
               />
             ))}
           </div>

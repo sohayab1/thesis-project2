@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FeedbackForm } from "@/components/feedback/FeedbackForm";
@@ -20,6 +20,8 @@ interface ComplaintCardProps {
   onFeedback?: () => void | Promise<void>;
   onResolve?: () => Promise<void>;
   showResolveButton?: boolean;
+  showEditButton?: boolean;
+  onEdit?: () => void;
 }
 
 export function ComplaintCard({
@@ -27,6 +29,8 @@ export function ComplaintCard({
   onFeedback,
   onResolve,
   showResolveButton,
+  showEditButton,
+  onEdit,
 }: ComplaintCardProps) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
@@ -51,12 +55,13 @@ export function ComplaintCard({
 
   const getStatusColor = (status: ComplaintStatus): string => {
     const colors: Record<ComplaintStatus, string> = {
-      PENDING: "bg-yellow-500",
-      IN_PROGRESS: "bg-blue-500",
+      SUBMITTED: "bg-blue-500",
+      APPROVAL_PENDING: "bg-yellow-500",
+      ENQUIRY_ONGOING: "bg-purple-500",
       RESOLVED: "bg-green-500",
-      REJECTED: "bg-red-500",
+      UNRESOLVED: "bg-red-500"
     };
-    return colors[status];
+    return colors[status] || "bg-gray-500";
   };
 
   const canGiveFeedback = complaint.status === "RESOLVED" && !complaint.feedback;
@@ -136,6 +141,18 @@ export function ComplaintCard({
             )}
           </div>
         </CardContent>
+        <CardFooter className="flex justify-between">
+          {showEditButton && (
+            <Button variant="outline" onClick={onEdit}>
+              Edit
+            </Button>
+          )}
+          {showResolveButton && (
+            <Button onClick={onResolve}>
+              Resolve
+            </Button>
+          )}
+        </CardFooter>
       </Card>
 
       <Dialog 

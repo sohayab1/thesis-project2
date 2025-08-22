@@ -121,4 +121,27 @@ public class ComplaintController {
         }
         return ResponseEntity.ok(complaintService.resolveComplaint(id));
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ComplaintDto> editComplaint(
+        @PathVariable Long id,
+        @Valid @RequestBody ComplaintCreateDto complaintDto,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        ComplaintDto existingComplaint = complaintService.getComplaint(id);
+        if (!existingComplaint.getUser().getId().equals(userDetails.getUser().getId())) {
+            throw new UnauthorizedException("You can only edit your own complaints");
+        }
+        return ResponseEntity.ok(complaintService.updateComplaint(id, complaintDto));
+    }
+
+    @PutMapping("/{id}/process")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ComplaintDto> processComplaint(
+        @PathVariable Long id,
+        @Valid @RequestBody ComplaintStatusUpdateDto statusUpdate
+    ) {
+        return ResponseEntity.ok(complaintService.processComplaint(id, statusUpdate));
+    }
 }

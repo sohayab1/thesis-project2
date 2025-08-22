@@ -29,10 +29,18 @@ const initialFormData: ComplaintFormData = {
     suspectPhoneNumber: "",
 };
 
-export function NewComplaintPage() {
+interface Props {
+  initialData?: ComplaintCreateDto;
+  onSubmit?: (data: ComplaintCreateDto) => Promise<void>;
+  isEditing?: boolean;
+}
+
+export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: Props) {
   const [loading, setLoading] = useState(false)
   const [departmentList, setDepartmentList] = useState<Department[]>([])
-  const [complaintData, setComplaintData] = useState<ComplaintFormData>(initialFormData)
+  const [complaintData, setComplaintData] = useState<ComplaintFormData>(
+    initialData || initialFormData
+  );
   const [evidenceFiles, setEvidenceFiles] = useState<File[]>([])
   const [showFeedback, setShowFeedback] = useState(false)
   const [submittedComplaintId, setSubmittedComplaintId] = useState<number | null>(null)
@@ -53,28 +61,31 @@ export function NewComplaintPage() {
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
+    e.preventDefault();
+    setLoading(true);
+    
     try {
-      const formData = new FormData()
-      formData.append('complaint', new Blob([JSON.stringify(complaintData)], {
-        type: 'application/json'
-      }))
-      
-      evidenceFiles.forEach(file => {
-        formData.append('evidences', file)
-      })
+      if (isEditing && onSubmit) {
+        await onSubmit(complaintData);
+      } else {
+        const formData = new FormData()
+        formData.append('complaint', new Blob([JSON.stringify(complaintData)], {
+          type: 'application/json'
+        }))
+        
+        evidenceFiles.forEach(file => {
+          formData.append('evidences', file)
+        })
 
-      const response = await complaints.create(complaintData, evidenceFiles)
-      toast.success("Complaint submitted successfully")
-      setSubmittedComplaintId(response.id)
-      setShowFeedback(true)
+        const response = await complaints.create(complaintData, evidenceFiles)
+        toast.success("Complaint submitted successfully")
+        setSubmittedComplaintId(response.id)
+        setShowFeedback(true)
+      }
     } catch (error) {
-      console.error('Error submitting complaint:', error)
-      toast.error("Failed to submit complaint. Please check all required fields.")
+      toast.error(isEditing ? "Failed to update complaint" : "Failed to submit complaint");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -86,7 +97,9 @@ export function NewComplaintPage() {
   return (
     <Layout>
       <div className="max-w-2xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold">File a New Complaint</h1>
+        <h1 className="text-2xl font-bold">
+          {isEditing ? "Edit Complaint" : "File a New Complaint"}
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium">Title *</label>

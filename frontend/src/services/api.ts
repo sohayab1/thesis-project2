@@ -198,6 +198,14 @@ export const complaints = {
       throw error;
     }
   },
+  updateComplaint: async (id: number, data: ComplaintCreateDto): Promise<ComplaintDto> => {
+    const response = await api.put(`/complaints/${id}`, data);
+    return response.data;
+  },
+  getComplaint: async (id: number): Promise<ComplaintDto> => {
+    const response = await api.get(`/complaints/${id}`);
+    return response.data;
+  },
 };
 
 export const users = {

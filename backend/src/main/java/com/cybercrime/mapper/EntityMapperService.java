@@ -47,12 +47,20 @@ public class EntityMapperService {
 
     // Complaint mappings
     public ComplaintDto toComplaintDto(Complaint complaint) {
+        if (complaint == null) {
+            return null;
+        }
+
         ComplaintDto dto = new ComplaintDto();
         dto.setId(complaint.getId());
         dto.setTitle(complaint.getTitle());
         dto.setDescription(complaint.getDescription());
-        dto.setStatus(complaint.getStatus());  // Now passing enum directly
-        dto.setPriority(complaint.getPriority());  // Now passing enum directly
+        dto.setStatus(complaint.getStatus());  // ComplaintStatus is an enum, pass directly
+        dto.setPriority(complaint.getPriority());
+        dto.setLocation(complaint.getLocation());
+        dto.setIncidentDate(complaint.getIncidentDate());
+        dto.setCreatedAt(complaint.getCreatedAt());
+        dto.setResolvedDate(complaint.getResolvedDate());
         dto.setSuspectInfo(complaint.getSuspectInfo());
         dto.setSuspectSocialMedia(complaint.getSuspectSocialMedia());
         dto.setSuspectPhoneNumber(complaint.getSuspectPhoneNumber());
@@ -76,16 +84,20 @@ public class EntityMapperService {
     }
 
     public Complaint toComplaint(ComplaintCreateDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
         Complaint complaint = new Complaint();
         complaint.setTitle(dto.getTitle());
         complaint.setDescription(dto.getDescription());
+        complaint.setStatus(ComplaintStatus.SUBMITTED);  // Always start with SUBMITTED
         complaint.setLocation(dto.getLocation());
         complaint.setIncidentDate(dto.getIncidentDate());
         complaint.setSuspectInfo(dto.getSuspectInfo());
         complaint.setSuspectSocialMedia(dto.getSuspectSocialMedia());
         complaint.setSuspectPhoneNumber(dto.getSuspectPhoneNumber());
         complaint.setPriority(ComplaintPriority.MEDIUM); // Default priority
-        complaint.setStatus(ComplaintStatus.PENDING);
         complaint.setCreatedAt(LocalDateTime.now());
         return complaint;
     }

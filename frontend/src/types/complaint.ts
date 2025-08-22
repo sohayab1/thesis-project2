@@ -1,7 +1,6 @@
 import { Evidence, Feedback, User } from "./user";
 
 export type ReporterType = 'victim' | 'reporter' | 'business' | 'witness';
-export type ComplaintStatus = 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED';
 export type ComplaintPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export interface ComplaintCreateDto {
@@ -33,34 +32,42 @@ export interface Complaint extends Omit<ComplaintCreateDto, 'departmentId'> {
   feedback?: Feedback;
 }
 
+export enum ComplaintStatus {
+  SUBMITTED = 'SUBMITTED',
+  APPROVAL_PENDING = 'APPROVAL_PENDING',
+  ENQUIRY_ONGOING = 'ENQUIRY_ONGOING',
+  RESOLVED = 'RESOLVED',
+  UNRESOLVED = 'UNRESOLVED'
+}
+
 export interface ComplaintDto {
-    id: number;
-    title: string;
-    description: string;
-    status: ComplaintStatus;
-    priority: ComplaintPriority;
-    location: string;
-    incidentDate: string;
-    createdAt: string;
-    updatedAt?: string;
-    suspectInfo?: string;
-    suspectSocialMedia?: string;
-    suspectPhoneNumber?: string;
-    rating?: number;
-    feedback?: string;
-    feedbackDate?: string;
-    evidences?: Array<{
-        id: number;
-        filePath: string;
-        fileType: string;
-    }>;
-    user: {
-        id: number;
-        name: string;
-        email: string;
-    };
-    department?: {
-        id: number;
-        name: string;
-    };
+  id: number;
+  title: string;
+  description: string;
+  status: ComplaintStatus;
+  priority: ComplaintPriority;
+  location: string;
+  incidentDate: string;
+  createdAt: string;
+  updatedAt?: string;
+  suspectInfo?: string;
+  suspectSocialMedia?: string;
+  suspectPhoneNumber?: string;
+  rating?: number;
+  feedback?: string;
+  feedbackDate?: string;
+  evidences?: Array<{
+      id: number;
+      filePath: string;
+      fileType: string;
+  }>;
+  user: {
+      id: number;
+      name: string;
+      email: string;
+  };
+  department?: {
+      id: number;
+      name: string;
+  };
 }

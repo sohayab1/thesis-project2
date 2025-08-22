@@ -14,4 +14,6 @@ public interface ComplaintService {
     List<ComplaintDto> getAllComplaints();
     void deleteComplaint(Long id);
     ComplaintDto resolveComplaint(Long complaintId);
+    ComplaintDto updateComplaint(Long id, ComplaintCreateDto complaintDto);
+    ComplaintDto processComplaint(Long id, ComplaintStatusUpdateDto statusUpdate);
 }
