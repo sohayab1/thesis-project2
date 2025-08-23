@@ -2,6 +2,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+// Import images with their proper extensions
+import image1 from '@/assets/image-1.png';  // or .jpg/.jpeg depending on file type
+import image2 from '@/assets/image-2.png';
+import image3 from '@/assets/image-3.png';
+import image4 from '@/assets/image-4.png';
+
 import { 
   ArrowRight, 
   Play, 
@@ -210,7 +216,7 @@ export function LandingPage() {
         </Container>
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section - Add image-1 */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white to-slate-50">
         <Container className="relative grid grid-cols-1 items-center gap-10 py-20 md:grid-cols-2">
           <div className="space-y-6">
@@ -250,16 +256,18 @@ export function LandingPage() {
             transition={{ duration: 0.6, delay: 0.1 }} 
             className="relative"
           >
-            {/* Add your hero image here */}
             <div className="relative rounded-3xl border border-slate-200 bg-white p-4 shadow-xl">
-              <div className="aspect-[16/10] w-full rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-500/10" />
+              <div 
+                className="aspect-[16/10] w-full rounded-2xl bg-cover bg-center"
+                style={{ backgroundImage: `url(${image1})` }}
+              />
             </div>
             <div className="pointer-events-none absolute -left-10 -top-10 -z-10 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
           </motion.div>
         </Container>
       </section>
 
-      {/* Features Section */}
+      {/* Features Section - Add image-2 */}
       <section id="features" className="bg-white py-20">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
@@ -290,31 +298,15 @@ export function LandingPage() {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6">
-              <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-slate-700">
-                <Stars className="h-4 w-4" /> Platform Features
-              </h3>
-              <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-slate-700 md:grid-cols-4">
-                <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" />Security</div>
-                <div className="flex items-center gap-2"><Database className="h-4 w-4" />Analytics</div>
-                <div className="flex items-center gap-2"><Lock className="h-4 w-4" />Privacy</div>
-                <div className="flex items-center gap-2"><Users className="h-4 w-4" />Support</div>
-              </div>
-            </div>
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
-              <h3 className="text-lg font-semibold">Case Studies</h3>
-              <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-square rounded-xl bg-slate-200" />
-                ))}
-              </div>
-              <CustomButton className="mt-4">View All Cases</CustomButton>
+              <div className="aspect-video w-full rounded-xl bg-cover bg-center"
+                   style={{ backgroundImage: `url(${image2})` }} />
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Social Proof Section */}
+      {/* Social Proof Section - Add image-3 */}
       <section className="bg-slate-50 py-20">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
@@ -330,6 +322,10 @@ export function LandingPage() {
             {testimonials.map((t) => (
               <Testimonial key={t.name} {...t} />
             ))}
+          </div>
+          <div className="mt-10">
+            <div className="aspect-video w-full max-w-2xl mx-auto rounded-xl bg-cover bg-center"
+                 style={{ backgroundImage: `url(${image3})` }} />
           </div>
         </Container>
       </section>
@@ -349,26 +345,35 @@ export function LandingPage() {
         </Container>
       </section>
 
-      {/* Call to Action */}
+      {/* Call to Action Section - Add image-4 */}
       <section className="bg-indigo-600 text-white py-20">
         <Container>
-          <div className="text-center">
-            <h2 className="text-3xl font-bold sm:text-4xl">
-              Ready to Make the Internet Safer?
-            </h2>
-            <p className="mt-4 text-lg opacity-90">
-              Join our community of vigilant citizens working together to combat cybercrime.
-            </p>
-            {!isAuthenticated && (
-              <div className="mt-8">
-                <CustomButton 
-                  onClick={() => navigate('/register')}
-                  className="bg-white text-indigo-600 hover:bg-white/90"
-                >
-                  Get Started <ArrowRight className="h-4 w-4" />
-                </CustomButton>
-              </div>
-            )}
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl font-bold sm:text-4xl">
+                Ready to Make the Internet Safer?
+              </h2>
+              <p className="mt-4 text-lg opacity-90">
+                Join our community of vigilant citizens working together to combat cybercrime.
+              </p>
+              {!isAuthenticated && (
+                <div className="mt-8">
+                  <CustomButton 
+                    onClick={() => navigate('/register')}
+                    className="bg-white text-indigo-600 hover:bg-white/90"
+                  >
+                    Get Started <ArrowRight className="h-4 w-4" />
+                  </CustomButton>
+                </div>
+              )}
+            </div>
+            <div className="hidden md:block">
+              <img 
+                src={image4} 
+                alt="Cybersecurity" 
+                className="rounded-xl shadow-lg"
+              />
+            </div>
           </div>
         </Container>
       </section>

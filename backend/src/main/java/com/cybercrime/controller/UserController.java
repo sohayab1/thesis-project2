@@ -5,6 +5,7 @@ import com.cybercrime.security.CustomUserDetails;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.dto.UserUpdateDto;
 import com.cybercrime.dto.RegisterUserDto;
+import com.cybercrime.dto.UserFeedbackDto;
 import com.cybercrime.service.UserService;
 
 import jakarta.validation.Valid;
@@ -72,5 +73,20 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'DEPARTMENT_ADMIN')")
     public ResponseEntity<List<UserDto>> getUsersByDepartment(@PathVariable Long departmentId) {
         return ResponseEntity.ok(userService.getUsersByDepartment(departmentId));
+    }
+
+    @PostMapping("/feedback")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserDto> submitFeedback(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody UserFeedbackDto feedback
+    ) {
+        return ResponseEntity.ok(userService.submitFeedback(userDetails.getUser().getId(), feedback));
+    }
+
+    @GetMapping("/feedback")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserFeedbackDto> getFeedback(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(userService.getUserFeedback(userDetails.getUser().getId()));
     }
 }

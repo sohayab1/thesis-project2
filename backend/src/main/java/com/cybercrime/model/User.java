@@ -45,6 +45,14 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Complaint> complaints;
 
+    @Column(columnDefinition = "TEXT")
+    private String userFeedback;
+
+    @Column(name = "user_rating")
+    private Integer userRating;  // Add this field
+
+    private LocalDateTime lastFeedbackDate;  // Add this field
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

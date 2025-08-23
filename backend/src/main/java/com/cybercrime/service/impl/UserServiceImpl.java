@@ -6,6 +6,7 @@ import com.cybercrime.model.UserRole;
 import com.cybercrime.dto.RegisterUserDto;
 import com.cybercrime.dto.UserDto;
 import com.cybercrime.dto.UserUpdateDto;
+import com.cybercrime.dto.UserFeedbackDto;
 import com.cybercrime.mapper.EntityMapperService;
 import com.cybercrime.repository.UserRepository;
 import com.cybercrime.repository.DepartmentRepository;
@@ -243,5 +244,24 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException("Invalid file type. Only images are allowed");
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public UserDto submitFeedback(Long userId, UserFeedbackDto feedbackDto) {
+        User user = findUserById(userId);
+        user.setUserFeedback(feedbackDto.getFeedback());
+        user.setUserRating(feedbackDto.getRating());  // Add this line
+        user.setLastFeedbackDate(LocalDateTime.now());
+        return mapper.toUserDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserFeedbackDto getUserFeedback(Long userId) {
+        User user = findUserById(userId);
+        UserFeedbackDto dto = new UserFeedbackDto();
+        dto.setFeedback(user.getUserFeedback());
+        dto.setRating(user.getUserRating());
+        return dto;
     }
 }

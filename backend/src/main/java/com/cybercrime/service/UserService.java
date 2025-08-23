@@ -2,6 +2,7 @@ package com.cybercrime.service;
 
 import com.cybercrime.dto.RegisterUserDto;
 import com.cybercrime.dto.UserDto;
+import com.cybercrime.dto.UserFeedbackDto;
 import com.cybercrime.dto.UserUpdateDto;
 import com.cybercrime.model.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,4 +32,6 @@ public interface UserService {
     Optional<User> findById(Long id);
     void delete(Long id);
     User update(User user);
+    UserDto submitFeedback(Long userId, UserFeedbackDto feedback);
+    UserFeedbackDto getUserFeedback(Long userId); // Change return type from String to UserFeedbackDto
 }

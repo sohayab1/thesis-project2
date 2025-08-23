@@ -1,20 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { complaints } from "@/services/api";
+import { complaints, users } from "@/services/api";
 import { useNavigate } from "react-router-dom";
 import { ComplaintCard } from "@/components/complaints/ComplaintCard";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ComplaintList } from "@/components/ComplaintList";
 import { ComplaintDto } from "@/types/dto";
+import { UserFeedbackModal } from "@/components/feedback/UserFeedbackModal";
 
 export function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [currentFeedback, setCurrentFeedback] = useState<{ feedback: string; rating: number }>();
 
   const {
     data: complaintsList = [] as ComplaintDto[],
@@ -35,6 +38,18 @@ export function DashboardPage() {
       refetch();
     }
   }, [refetch, user?.id]);
+
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        const feedback = await users.getFeedback();
+        setCurrentFeedback(feedback);
+      } catch (error) {
+        console.error("Failed to fetch feedback:", error);
+      }
+    };
+    fetchFeedback();
+  }, []);
 
   const handleComplaintResolve = async (complaintId: number) => {
     try {
@@ -79,9 +94,14 @@ export function DashboardPage() {
               {complaintsList.length} total complaints
             </p>
           </div>
-          <Button onClick={() => navigate("/dashboard/new-complaint")}>
-            File New Complaint
-          </Button>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => setShowFeedback(true)}>
+              Give App Feedback
+            </Button>
+            <Button onClick={() => navigate("/dashboard/new-complaint")}>
+              File New Complaint
+            </Button>
+          </div>
         </div>
 
         {complaintsList.length === 0 ? (
@@ -110,6 +130,12 @@ export function DashboardPage() {
             ))}
           </div>
         )}
+
+        <UserFeedbackModal
+          isOpen={showFeedback}
+          onClose={() => setShowFeedback(false)}
+          currentFeedback={currentFeedback}
+        />
       </div>
     </Layout>
   );

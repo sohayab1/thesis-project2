@@ -225,6 +225,14 @@ export const users = {
   updateProfile: async (data: any) => {
     const response = await api.put('/users/profile', data);
     return response.data;
+  },
+  submitFeedback: async (data: { feedback: string, rating: number }) => {
+    const response = await api.post('/users/feedback', data);
+    return response.data;
+  },
+  getFeedback: async () => {
+    const response = await api.get<{ feedback: string; rating: number }>('/users/feedback');
+    return response.data;
   }
 };
 
