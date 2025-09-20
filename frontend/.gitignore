@@ -54,10 +54,10 @@ backend/mvnw.cmd
 # Sensitive configuration
 # --------------------------
 # Spring Boot application properties/yaml
-backend/src/main/resources/application.properties
-backend/src/main/resources/application.yml
-backend/src/main/resources/application-*.properties
-backend/src/main/resources/application-*.yml
+# backend/src/main/resources/application.properties
+# backend/src/main/resources/application.yml
+# backend/src/main/resources/application-*.properties
+# backend/src/main/resources/application-*.yml
 
 # Env files (frontend or backend)
 *.env
