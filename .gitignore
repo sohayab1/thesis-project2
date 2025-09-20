@@ -24,7 +24,7 @@ target/
 
 ### Project Specific ###
 uploads/
-application.properties
+# application.properties
 application-dev.properties
 
 # Node.js
@@ -58,5 +58,5 @@ Thumbs.db
 
 # Project-specific
 uploads/
-application.properties
+# application.properties
 application-dev.properties
