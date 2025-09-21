@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 // Import images with their proper extensions
 import image1 from '@/assets/image-1.png';  // or .jpg/.jpeg depending on file type
 import image2 from '@/assets/image-2.png';
@@ -195,9 +195,12 @@ export function LandingPage() {
           </div>
           <nav className="hidden items-center gap-8 text-sm text-slate-700 md:flex">
             <a className="hover:text-slate-900" href="#features">Features</a>
-            <a className="hover:text-slate-900" href="/about">About</a>
-            <a className="hover:text-slate-900" href="/news">News</a>
-            <a className="hover:text-slate-900" href="/contact">Contact</a>
+            {/* <a className="hover:text-slate-900" href="/about">About</a> */}
+            <Link className="hover:text-slate-900" to="/about">About</Link>
+            {/* <a className="hover:text-slate-900" href="/news">News</a> */}
+            <Link className="hover:text-slate-900" to="/news">News</Link>
+            {/* <a className="hover:text-slate-900" href="/contact">Contact</a> */}
+            <Link className="hover:text-slate-900" to="/contact">Contact</Link>
             {!isAuthenticated ? (
               <>
                 <CustomButton variant="ghost" onClick={() => navigate('/login')}>
