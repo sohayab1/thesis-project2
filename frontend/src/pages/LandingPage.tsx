@@ -201,6 +201,7 @@ export function LandingPage() {
             <Link className="hover:text-slate-900" to="/news">News</Link>
             {/* <a className="hover:text-slate-900" href="/contact">Contact</a> */}
             <Link className="hover:text-slate-900" to="/contact">Contact</Link>
+            
             {!isAuthenticated ? (
               <>
                 <CustomButton variant="ghost" onClick={() => navigate('/login')}>
