@@ -163,7 +163,7 @@ export function RegisterPage() {
                   </div>
 
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium leading-none">NID Front / Birth certificate</label>
+                    <label className="text-sm font-medium leading-none">NID Front</label>
                     <Input
                       type="file"
                       name="nidFront"
@@ -174,7 +174,7 @@ export function RegisterPage() {
                   </div>
 
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium leading-none">NID Back / Birth certificate</label>
+                    <label className="text-sm font-medium leading-none">NID Back</label>
                     <Input
                       type="file"
                       name="nidBack"
