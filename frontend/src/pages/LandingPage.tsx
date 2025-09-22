@@ -208,7 +208,7 @@ export function LandingPage() {
                   Login
                 </CustomButton>
                 <CustomButton onClick={() => navigate('/register')}>
-                  Report Now <ArrowRight className="h-4 w-4" />
+                  Create Account <ArrowRight className="h-4 w-4" />
                 </CustomButton>
               </>
             ) : (
@@ -240,7 +240,7 @@ export function LandingPage() {
             <div className="flex flex-wrap gap-3">
               {!isAuthenticated ? (
                 <>
-                  <CustomButton onClick={() => navigate('/register')}>
+                  <CustomButton onClick={() => navigate('/login')}>
                     Report Now <ArrowRight className="h-4 w-4" />
                   </CustomButton>
                   <CustomButton variant="ghost" onClick={() => navigate('/about')}>
