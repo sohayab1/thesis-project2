@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useAuth } from '@/hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 // Import images with their proper extensions
-import image1 from '@/assets/image-1.png';  // or .jpg/.jpeg depending on file type
+import image1 from '@/assets/image-12.png';  // or .jpg/.jpeg depending on file type
 import image2 from '@/assets/image-2.png';
 import image3 from '@/assets/image-3.png';
 import image4 from '@/assets/image-4.png';
