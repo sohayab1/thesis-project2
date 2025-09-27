@@ -1,16 +1,17 @@
 import { Layout } from "@/components/layout/Layout";
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
+import { AlertTriangle, Newspaper, ShieldCheck, Info, Gavel } from "lucide-react";
 
 type NewsItem = {
   id: number;
   title: string;
   summary: string;
-  date: string;        // ISO string
+  date: string;
   category: "Scams" | "Law & Policy" | "Awareness" | "Enforcement" | "Advisory";
-  source?: string;     // e.g., "CID Press Note"
+  source?: string;
   externalUrl?: string;
-  slug?: string;       // internal route like /news/:slug
+  slug?: string;
 };
 
 const NEWS: NewsItem[] = [
@@ -107,11 +108,9 @@ export function NewsPage() {
 
   const filtered = useMemo(() => {
     let rows = [...NEWS];
-
     if (category !== "All") {
       rows = rows.filter((n) => n.category === category);
     }
-
     if (query.trim()) {
       const q = query.toLowerCase();
       rows = rows.filter(
@@ -121,40 +120,63 @@ export function NewsPage() {
           (n.source ?? "").toLowerCase().includes(q)
       );
     }
-
     rows.sort((a, b) =>
       sortOrder === "newest"
         ? +new Date(b.date) - +new Date(a.date)
         : +new Date(a.date) - +new Date(b.date)
     );
-
     return rows;
   }, [category, query, sortOrder]);
 
+  const iconForCategory = (cat: string) => {
+    switch (cat) {
+      case "Scams":
+        return <AlertTriangle className="w-4 h-4" />;
+      case "Advisory":
+        return <Info className="w-4 h-4" />;
+      case "Awareness":
+        return <Newspaper className="w-4 h-4" />;
+      case "Law & Policy":
+        return <Gavel className="w-4 h-4" />;
+      case "Enforcement":
+        return <ShieldCheck className="w-4 h-4" />;
+      default:
+        return <Info className="w-4 h-4" />;
+    }
+  };
+
   return (
     <Layout>
-      <div className="container mx-auto py-12 px-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold">Latest News</h1>
-            <p className="text-gray-600 mt-2">
+      <div className="min-h-screen bg-gradient-to-b from-sky-50 via-indigo-50 to-fuchsia-50 relative">
+        {/* Decorative background */}
+        <div className="absolute inset-0 bg-grid-slate-200/40 [mask-image:radial-gradient(ellipse_at_center,white,transparent_80%)]" />
+
+        <div className="container relative mx-auto px-4 py-12">
+          {/* Header */}
+          <header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-100 via-fuchsia-100 to-amber-100 p-10 ring-1 ring-indigo-200/50 shadow-lg">
+            <h1 className="text-5xl font-extrabold bg-gradient-to-r from-indigo-700 via-fuchsia-600 to-amber-600 bg-clip-text text-transparent drop-shadow-md">
+              Latest News
+            </h1>
+            <p className="mt-4 max-w-3xl text-gray-700 text-lg leading-relaxed">
               Updates, advisories, and safety tips for internet users in Bangladesh.
             </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Search */}
-            <input
-              type="text"
-              placeholder="Search news…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="w-full sm:w-64 rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-200"
-            />
-            {/* Category */}
+          </header>
+
+          {/* Search & Filters */}
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <div className="relative w-full sm:w-80">
+              <input
+                type="text"
+                placeholder="🔍 Search news…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full rounded-xl border border-gray-300/80 bg-white/90 backdrop-blur px-4 py-2.5 shadow-md focus:outline-none focus:ring-4 focus:ring-sky-300 focus:ring-offset-2 transition-all"
+              />
+            </div>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as any)}
-              className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="rounded-xl border border-gray-300/80 bg-white/90 backdrop-blur px-3 py-2 shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-fuchsia-300 focus:ring-offset-2 transition-all"
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -162,109 +184,93 @@ export function NewsPage() {
                 </option>
               ))}
             </select>
-            {/* Sort */}
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as any)}
-              className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="rounded-xl border border-gray-300/80 bg-white/90 backdrop-blur px-3 py-2 shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-amber-300 focus:ring-offset-2 transition-all"
             >
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
             </select>
           </div>
-        </div>
 
-        {/* Quick actions */}
-        <div className="mb-6 flex flex-wrap items-center gap-3">
-          <Link
-            to="/login"
-            className="inline-flex items-center rounded-xl bg-black text-white px-4 py-2 text-sm hover:opacity-90"
-          >
-            Report an Incident
-          </Link>
-        </div>
+          {/* Results */}
+          <section className="mt-10">
+            <div className="flex items-baseline justify-between mb-4">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">
+                News & Advisories
+              </h2>
+              <p className="text-sm text-gray-600 italic">
+                Showing {filtered.length} {filtered.length === 1 ? "item" : "items"}
+                {category !== "All" ? ` in ${category}` : ""}.
+              </p>
+            </div>
 
-        {/* Results meta */}
-        <div className="text-sm text-gray-600 mb-4">
-          Showing {filtered.length} {filtered.length === 1 ? "item" : "items"}
-          {category !== "All" ? ` in ${category}` : ""}.
-        </div>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((item) => (
-            <article
-              key={item.id}
-              className="rounded-2xl border bg-white p-5 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span
-                  className={[
-                    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
-                    item.category === "Scams"
-                      ? "bg-red-50 text-red-700"
-                      : item.category === "Advisory"
-                      ? "bg-blue-50 text-blue-700"
-                      : item.category === "Awareness"
-                      ? "bg-amber-50 text-amber-800"
-                      : item.category === "Law & Policy"
-                      ? "bg-purple-50 text-purple-700"
-                      : "bg-emerald-50 text-emerald-700",
-                  ].join(" ")}
-                >
-                  {item.category}
-                </span>
-                <time className="text-xs text-gray-500">{formatDate(item.date)}</time>
-              </div>
-
-              <h2 className="text-lg font-semibold leading-snug mb-2">{item.title}</h2>
-              <p className="text-gray-700 text-sm mb-4">{item.summary}</p>
-
-              <div className="flex items-center justify-between">
-                {item.slug ? (
-                  <Link
-                    to={`/news/${item.slug}`}
-                    className="text-sm font-medium hover:underline"
+            {filtered.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filtered.map((item) => (
+                  <article
+                    key={item.id}
+                    className="group rounded-2xl border border-indigo-100 bg-white/90 p-5 shadow-md hover:shadow-xl hover:scale-[1.02] transition-all"
                   >
-                    Read more →
-                  </Link>
-                ) : item.externalUrl ? (
-                  <a
-                    href={item.externalUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm font-medium hover:underline"
-                  >
-                    Read more →
-                  </a>
-                ) : (
-                  <span className="text-sm text-gray-400">More info soon</span>
-                )}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset bg-gradient-to-r from-sky-100 to-indigo-100 text-indigo-700">
+                        {iconForCategory(item.category)} {item.category}
+                      </span>
+                      <time className="text-xs text-gray-500">{formatDate(item.date)}</time>
+                    </div>
 
-                {item.source && (
-                  <span className="text-xs text-gray-500">Source: {item.source}</span>
-                )}
+                    <h3 className="text-lg font-semibold leading-snug mb-2 text-gray-900">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                      {item.summary}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      {item.slug ? (
+                        <Link
+                          to={`/news/${item.slug}`}
+                          className="text-sm font-medium text-indigo-700 hover:text-indigo-900 inline-flex items-center gap-1"
+                        >
+                          Read more →
+                        </Link>
+                      ) : item.externalUrl ? (
+                        <a
+                          href={item.externalUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm font-medium text-indigo-700 hover:text-indigo-900 inline-flex items-center gap-1"
+                        >
+                          Read more →
+                        </a>
+                      ) : (
+                        <span className="text-sm text-gray-400">More info soon</span>
+                      )}
+                      {item.source && (
+                        <span className="text-xs text-gray-500">Source: {item.source}</span>
+                      )}
+                    </div>
+                  </article>
+                ))}
               </div>
-            </article>
-          ))}
-        </div>
+            ) : (
+              <div className="text-center text-gray-600 py-16">
+                <p className="text-xl font-semibold">No news found</p>
+                <p className="text-sm mt-1">Try a different keyword or category.</p>
+              </div>
+            )}
+          </section>
 
-        {/* Empty state */}
-        {filtered.length === 0 && (
-          <div className="text-center text-gray-600 py-16">
-            <p className="text-lg font-medium">No news found</p>
-            <p className="text-sm mt-1">Try a different keyword or category.</p>
+          {/* Bangladesh Safety Note */}
+          <div className="mt-12 rounded-2xl border border-indigo-100 bg-white/90 p-6 shadow-sm">
+            <h3 className="font-semibold mb-2 text-indigo-800">Bangladesh Safety Note</h3>
+            <p className="text-sm text-gray-700 leading-relaxed">
+              For urgent threats, contact your nearest police station or appropriate authorities.
+              When reporting online crimes, keep evidence like SMS, transaction IDs, screenshots,
+              account handles, and URLs. Do not share your OTP or account PIN with anyone.
+            </p>
           </div>
-        )}
-
-        {/* Bangladesh-focused footer note */}
-        <div className="mt-12 rounded-2xl border bg-gray-50 p-6">
-          <h3 className="font-semibold mb-2">Bangladesh Safety Note</h3>
-          <p className="text-sm text-gray-700">
-            For urgent threats, contact your nearest police station or appropriate authorities.
-            When reporting online crimes, keep evidence like SMS, transaction IDs, screenshots,
-            account handles, and URLs. Do not share your OTP or account PIN with anyone.
-          </p>
         </div>
       </div>
     </Layout>
