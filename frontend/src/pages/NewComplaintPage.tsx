@@ -7,26 +7,24 @@ import { Textarea } from "@/components/ui/textarea"
 import { complaints, departments } from "@/services/api"
 import { toast } from "sonner"
 import { FeedbackModal } from "@/components/feedback/FeedbackModal"
-import type { ComplaintCreateDto, ReporterType, ComplaintPriority } from "@/types/complaint";
+import type { ComplaintCreateDto } from "@/types/complaint"
 
 interface Department {
   id: number;
   name: string;
 }
 
-interface ComplaintFormData extends ComplaintCreateDto {
-    // All fields are inherited from ComplaintCreateDto
-}
+interface ComplaintFormData extends ComplaintCreateDto {}
 
 const initialFormData: ComplaintFormData = {
-    title: "",
-    description: "",
-    departmentId: "",
-    location: "",
-    incidentDate: "",
-    suspectInfo: "",
-    suspectSocialMedia: "",
-    suspectPhoneNumber: "",
+  title: "",
+  description: "",
+  departmentId: "",
+  location: "",
+  incidentDate: "",
+  suspectInfo: "",
+  suspectSocialMedia: "",
+  suspectPhoneNumber: "",
 };
 
 interface Props {
@@ -52,7 +50,7 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
         const data = await departments.getAll();
         setDepartmentList(data);
       } catch (error) {
-        console.error('Error fetching departments:', error);
+        console.error("Error fetching departments:", error);
         toast.error("Failed to load departments");
       }
     };
@@ -63,36 +61,46 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
+      // 🔒 Validation: Prevent future incident dates
+      if (new Date(complaintData.incidentDate) > new Date()) {
+        toast.error("Incident date cannot be in the future");
+        setLoading(false);
+        return;
+      }
+
       if (isEditing && onSubmit) {
         await onSubmit(complaintData);
       } else {
-        const formData = new FormData()
-        formData.append('complaint', new Blob([JSON.stringify(complaintData)], {
-          type: 'application/json'
-        }))
-        
-        evidenceFiles.forEach(file => {
-          formData.append('evidences', file)
-        })
+        const formData = new FormData();
+        formData.append(
+          "complaint",
+          new Blob([JSON.stringify(complaintData)], {
+            type: "application/json",
+          })
+        );
 
-        const response = await complaints.create(complaintData, evidenceFiles)
-        toast.success("Complaint submitted successfully")
-        setSubmittedComplaintId(response.id)
-        setShowFeedback(true)
+        evidenceFiles.forEach((file) => {
+          formData.append("evidences", file);
+        });
+
+        const response = await complaints.create(complaintData, evidenceFiles);
+        toast.success("Complaint submitted successfully");
+        setSubmittedComplaintId(response.id);
+        setShowFeedback(true);
       }
     } catch (error) {
       toast.error(isEditing ? "Failed to update complaint" : "Failed to submit complaint");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleFeedbackClose = () => {
-    setShowFeedback(false)
-    navigate('/dashboard')
-  }
+    setShowFeedback(false);
+    navigate("/dashboard");
+  };
 
   return (
     <Layout>
@@ -100,45 +108,57 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
         <h1 className="text-2xl font-bold mb-6">
           {isEditing ? "Edit Complaint" : "File New Complaint"}
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium">Title *</label>
+            <label htmlFor="title" className="text-sm font-medium">
+              Title *
+            </label>
             <Input
               id="title"
               value={complaintData.title}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                title: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  title: e.target.value,
+                }))
+              }
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">Description *</label>
+            <label htmlFor="description" className="text-sm font-medium">
+              Description *
+            </label>
             <Textarea
               id="description"
               value={complaintData.description}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                description: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  description: e.target.value,
+                }))
+              }
               required
               rows={6}
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="department" className="text-sm font-medium">Department *</label>
+            <label htmlFor="department" className="text-sm font-medium">
+              Department *
+            </label>
             <select
               id="department"
               className="w-full rounded-md border p-2"
               value={complaintData.departmentId}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                departmentId: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  departmentId: e.target.value,
+                }))
+              }
               required
             >
               <option value="">Select Department</option>
@@ -151,28 +171,37 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="location" className="text-sm font-medium">Location *</label>
+            <label htmlFor="location" className="text-sm font-medium">
+              Location *
+            </label>
             <Input
               id="location"
               value={complaintData.location}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                location: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  location: e.target.value,
+                }))
+              }
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="incidentDate" className="text-sm font-medium">Incident Date *</label>
+            <label htmlFor="incidentDate" className="text-sm font-medium">
+              Incident Date *
+            </label>
             <Input
               type="datetime-local"
               id="incidentDate"
               value={complaintData.incidentDate}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                incidentDate: e.target.value
-              }))}
+              max={new Date().toISOString().slice(0, 16)} // 🔒 prevent future date selection
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  incidentDate: e.target.value,
+                }))
+              }
               required
             />
           </div>
@@ -184,10 +213,12 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
             <Textarea
               id="suspectInfo"
               value={complaintData.suspectInfo}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                suspectInfo: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  suspectInfo: e.target.value,
+                }))
+              }
               placeholder="Provide any information about the suspect"
               rows={4}
             />
@@ -200,10 +231,12 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
             <Input
               id="suspectSocialMedia"
               value={complaintData.suspectSocialMedia}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                suspectSocialMedia: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  suspectSocialMedia: e.target.value,
+                }))
+              }
               placeholder="Enter social media profile links"
             />
           </div>
@@ -215,21 +248,27 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
             <Input
               id="suspectPhoneNumber"
               value={complaintData.suspectPhoneNumber}
-              onChange={(e) => setComplaintData(prev => ({
-                ...prev,
-                suspectPhoneNumber: e.target.value
-              }))}
+              onChange={(e) =>
+                setComplaintData((prev) => ({
+                  ...prev,
+                  suspectPhoneNumber: e.target.value,
+                }))
+              }
               placeholder="Enter suspect's phone number"
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="evidence" className="text-sm font-medium">Evidence (Optional)</label>
+            <label htmlFor="evidence" className="text-sm font-medium">
+              Evidence (Optional)
+            </label>
             <Input
               id="evidence"
               type="file"
               multiple
-              onChange={(e) => setEvidenceFiles(Array.from(e.target.files || []))}
+              onChange={(e) =>
+                setEvidenceFiles(Array.from(e.target.files || []))
+              }
               accept="image/*,.pdf,.doc,.docx"
             />
           </div>
@@ -238,7 +277,11 @@ export function NewComplaintPage({ initialData, onSubmit, isEditing = false }: P
             <Button type="submit" disabled={loading}>
               {loading ? "Submitting..." : "Submit Complaint"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => navigate('/dashboard')}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate("/dashboard")}
+            >
               Cancel
             </Button>
           </div>

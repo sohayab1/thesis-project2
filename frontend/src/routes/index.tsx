@@ -15,6 +15,9 @@ import { NewsPage } from '@/pages/NewsPage';
 import { AboutPage } from '@/pages/AboutPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { FaqPage } from '@/pages/FaqPage';
+import { Guidepage } from "@/pages/Guidepage";
+import { GoalPage } from "@/pages/GoalPage";
+import { WhatDo } from "@/pages/WhatDo";
 
 export function AppRoutes() {
   return (
@@ -27,6 +30,9 @@ export function AppRoutes() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/faq" element={<FaqPage />} />
+      <Route path="/guide" element={<Guidepage />} />
+      <Route path="/goal" element={<GoalPage />} />
+      <Route path="/what-we-do" element={<WhatDo />} />
 
       {/* Shared routes that all authenticated users can access */}
       <Route path="/dashboard">

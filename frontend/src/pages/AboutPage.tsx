@@ -14,16 +14,13 @@ type AboutItem = {
 };
 
 const ABOUT_ITEMS: AboutItem[] = [
-  { id: 1, title: "What we do", text: "We help Bangladesh users report cyber incidents, preserve evidence, and find the right authority. We publish local advisories and step-by-step guidance.", category: "About" },
-  { id: 2, title: "Who it’s for", text: "Everyday internet users, students, parents, and small businesses using social media, mobile wallets, or e-commerce in Bangladesh.", category: "About" },
+  { id: 1, title: "What we do", text: "We help Bangladesh users report cyber incidents, preserve evidence, and find the right authority. We publish local advisories and step-by-step guidance.", category: "About" , to: "/what-we-do"},
+  // { id: 2, title: "Who it’s for", text: "Everyday internet users, students, parents, and small businesses using social media, mobile wallets, or e-commerce in Bangladesh.", category: "About" },
   { id: 3, title: "Start: check advisories", text: "Visit the News page for current scams and safety tips before you act on suspicious messages.", category: "How to Use", to: "/news" },
-  { id: 4, title: "Report an incident", text: "Go to Report Incident, describe what happened, attach screenshots, transaction IDs, and links.", category: "How to Use", to: "/report-incident" },
+  { id: 4, title: "Report an incident", text: "Go to Report Incident, describe what happened, attach screenshots, transaction IDs, and links.", category: "How to Use", to: "/guide" },
   { id: 5, title: "Follow recommended steps", text: "After submission, you’ll see tailored next steps: preserving evidence, account security, and where to file official complaints.", category: "How to Use", to: "/resources" },
-  { id: 6, title: "Our goal for Bangladesh", text: "Reduce cybercrime harm through clear reporting, verified local guidance (EN/BN), and practical prevention for families, students, and SMEs.", category: "Goal" },
-  { id: 7, title: "Safety basics", text: "Never share OTP, PIN, or recovery codes. Legitimate services won’t ask. Prefer authenticator apps over SMS when available.", category: "Safety" },
-  { id: 8, title: "Evidence checklist", text: "Save screenshots, chat logs, phone numbers, URLs, transaction IDs, dates, and device info. Do not delete conversations.", category: "Evidence" },
-  { id: 9, title: "FAQ: Where to report officially?", text: "Use nearby police station or specialized cyber units. Keep your evidence ready before filing. We’ll guide you to the right channel.", category: "FAQ", to: "/faq" },
-  { id: 10, title: "FAQ: Account got hacked — what now?", text: "Change passwords, enable 2FA, revoke unknown sessions, and start platform recovery from official help centers only.", category: "FAQ", to: "/faq" },
+  { id: 6, title: "Our goal for Bangladesh", text: "Reduce cybercrime harm through clear reporting, verified local guidance (EN/BN), and practical prevention for families, students, and SMEs.", category: "Goal" , to: "/goal"},
+
 ];
 
 const CATEGORIES = ["All", "About", "How to Use", "Goal", "Safety", "Evidence", "FAQ"] as const;
@@ -110,9 +107,6 @@ export function AboutPage() {
             <div className="mt-6 flex gap-4 flex-wrap">
               <Link to="/login" className="inline-flex items-center rounded-xl bg-indigo-600 text-white px-5 py-2.5 text-sm hover:scale-105 shadow-md hover:bg-indigo-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 transition-all">
                 Start a Report
-              </Link>
-              <Link to="/news" className="inline-flex items-center rounded-xl bg-white text-indigo-700 px-5 py-2.5 text-sm hover:scale-105 shadow-md hover:bg-indigo-50 ring-1 ring-inset ring-indigo-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 transition-all">
-                See Advisories
               </Link>
             </div>
           </header>
