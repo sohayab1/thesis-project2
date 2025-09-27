@@ -8,6 +8,9 @@ import { auth } from "@/services/api"
 import { toast } from "sonner"
 import { GalleryVerticalEnd } from "lucide-react"
 
+import image4 from '@/assets/image-8.png';
+
+
 interface UserData {
   name: string;
   email: string;
@@ -85,6 +88,11 @@ export function RegisterPage() {
             <GalleryVerticalEnd className="mr-2 h-6 w-6" />
             CyberCrime Reporting
           </div>
+          <img
+            src={image4}
+            alt="Cybercrime"
+            className="relative z-20 mt-10 rounded-lg"
+          />
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">
@@ -101,7 +109,7 @@ export function RegisterPage() {
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">Create an Account</h1>
               <p className="text-sm text-muted-foreground">
-                Enter your details to register for a new account
+                Enter your details to register for a new account (নতুন অ্যাকাউন্টের জন্য নিবন্ধন করতে আপনার বিবরণ লিখুন)
               </p>
             </div>
 
@@ -150,7 +158,7 @@ export function RegisterPage() {
                   </div>
 
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium leading-none">NID Number</label>
+                    <label className="text-sm font-medium leading-none">NID Number (13 to 17 Digit)</label>
                     <Input
                       name="nidNumber"
                       value={userData.nidNumber}

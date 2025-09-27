@@ -6,6 +6,8 @@ import { Layout } from "@/components/layout/Layout";
 import { GalleryVerticalEnd } from "lucide-react";
 import { LoginForm } from "@/components/login-form";
 
+import image4 from '@/assets/image-6.png';
+
 export function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -41,6 +43,11 @@ export function LoginPage() {
             <GalleryVerticalEnd className="mr-2 h-6 w-6" />
             CyberCrime Reporting
           </div>
+          <img
+            src={image4}
+            alt="Cybercrime"
+            className="relative z-20 mt-10 rounded-lg"
+          />
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
               <p className="text-lg">
@@ -54,10 +61,10 @@ export function LoginPage() {
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">
-                Welcome back
+                LOGIN
               </h1>
               <p className="text-sm text-muted-foreground">
-                Enter your credentials to sign in to your account
+                Enter your credentials to sign in to your account (আপনার অ্যাকাউন্টে প্রবেশ করতে আপনার শংসাপত্রগুলি লিখুন)
               </p>
             </div>
             <LoginForm />

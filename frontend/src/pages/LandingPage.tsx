@@ -7,6 +7,10 @@ import image1 from '@/assets/image-1.png';  // or .jpg/.jpeg depending on file t
 import image2 from '@/assets/image-2.png';
 import image3 from '@/assets/image-3.png';
 import image4 from '@/assets/image-4.png';
+import image5 from '@/assets/image-5.png';
+import image6 from '@/assets/image-9.png';
+import image7 from '@/assets/image-10.png';
+import image8 from '@/assets/image-11.png';
 
 import { 
   ArrowRight, 
@@ -90,11 +94,6 @@ const Footer = () => (
           <p className="mt-3 max-w-sm text-sm text-slate-600">
             Making the internet safer for everyone through community-driven cybercrime reporting.
           </p>
-          <div className="mt-4 flex gap-3 opacity-70">
-            {["in", "fb", "x", "ig"].map((s) => (
-              <div key={s} className="h-8 w-8 rounded-full bg-slate-200" />
-            ))}
-          </div>
         </div>
         <div>
           <h4 className="text-sm font-semibold text-slate-900">Platform</h4>
@@ -108,32 +107,9 @@ const Footer = () => (
         <div>
           <h4 className="text-sm font-semibold text-slate-900">Resources</h4>
           <ul className="mt-3 space-y-2 text-sm text-slate-600">
-            <li><a href="/guidelines">Guidelines</a></li>
-            <li><a href="/help">Help Center</a></li>
-            <li><a href="/support">Support</a></li>
-            <li><a href="/statistics">Statistics</a></li>
+            <li><a href="https://www.police.gov.bd/">Support</a></li>
+            <li><a href="https://www.thedailystar.net/tags/cyber-crime">Statistics</a></li>
           </ul>
-        </div>
-        <div>
-          <h4 className="text-sm font-semibold text-slate-900">Legal</h4>
-          <ul className="mt-3 space-y-2 text-sm text-slate-600">
-            <li><a href="/privacy">Privacy Policy</a></li>
-            <li><a href="/terms">Terms of Use</a></li>
-            <li><a href="/cookies">Cookie Policy</a></li>
-            <li><a href="/disclaimer">Disclaimer</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-6 text-xs text-slate-500">
-        <p>© {new Date().getFullYear()} Cybercrime BD. All rights reserved.</p>
-        <div className="flex items-center gap-2">
-          <CustomButton variant="ghost" className="!px-3 !py-1 text-xs">
-            Accept cookies
-          </CustomButton>
-          <CustomButton variant="ghost" className="!px-3 !py-1 text-xs">
-            Reject
-          </CustomButton>
         </div>
       </div>
     </Container>
@@ -304,32 +280,12 @@ export function LandingPage() {
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
               <div className="aspect-video w-full rounded-xl bg-cover bg-center"
-                   style={{ backgroundImage: `url(${image2})` }} />
+                   style={{ backgroundImage: `url(${image7})` }} />
             </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Social Proof Section - Add image-3 */}
-      <section className="bg-slate-50 py-20">
-        <Container>
-          <div className="mx-auto max-w-2xl text-center">
-            <Pill>Testimonials</Pill>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Trusted by Experts
-            </h2>
-            <p className="mt-3 text-slate-600">
-              Hear from professionals who trust our platform.
-            </p>
-          </div>
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <Testimonial key={t.name} {...t} />
-            ))}
-          </div>
-          <div className="mt-10">
-            <div className="aspect-video w-full max-w-2xl mx-auto rounded-xl bg-cover bg-center"
-                 style={{ backgroundImage: `url(${image3})` }} />
+            <div className="rounded-2xl border border-slate-200 bg-white p-6">
+              <div className="aspect-video w-full rounded-xl bg-cover bg-center"
+                   style={{ backgroundImage: `url(${image6})` }} />
+            </div>
           </div>
         </Container>
       </section>
@@ -360,20 +316,10 @@ export function LandingPage() {
               <p className="mt-4 text-lg opacity-90">
                 Join our community of vigilant citizens working together to combat cybercrime.
               </p>
-              {!isAuthenticated && (
-                <div className="mt-8">
-                  <CustomButton 
-                    onClick={() => navigate('/register')}
-                    className="bg-white text-indigo-600 hover:bg-white/90"
-                  >
-                    Get Started <ArrowRight className="h-4 w-4" />
-                  </CustomButton>
-                </div>
-              )}
             </div>
             <div className="hidden md:block">
               <img 
-                src={image4} 
+                src={image8} 
                 alt="Cybersecurity" 
                 className="rounded-xl shadow-lg"
               />
